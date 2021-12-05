@@ -1,0 +1,6 @@
+apiVersion: v2
+name: catalogue-backend
+description: A backend for the catalogue
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
