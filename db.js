@@ -1,9 +1,12 @@
-var DataStore = require("nedb");
-var DB_FILE_NAME = __dirname + "products.json";
+const mongoose = require("mongoose");
+console.log(process.env.MONGO_URL);
+const DB_URL = (process.env.MONGO_URL || 'mongodb://db/test');
+console.log(DB_URL);
 
-var db = new DataStore({
-    filename: DB_FILE_NAME,
-    autoload: true
-});
+const dbConnect = function() {
+    const db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error: '));
+    return mongoose.connect(DB_URL, { useNewUrlParser: true });
+}
 
-module.exports = db;
+module.exports = dbConnect;
