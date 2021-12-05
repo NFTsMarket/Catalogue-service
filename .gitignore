@@ -1,2 +1,4 @@
 node_modules/
 .devcontainer
+categories.json
+catalog.json
