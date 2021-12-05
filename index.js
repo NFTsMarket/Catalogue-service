@@ -4,7 +4,7 @@ var DataStore = require('nedb');
 
 var port = 3000;
 var BASE_API_PATH = "/api/v1";
-var DB_FILE_NAME = __dirname + "/catalog.json";
+var DB_FILE_NAME = __dirname + "/products.json";
 
 console.log("Starting API server...");
 
@@ -23,12 +23,12 @@ app.get("/", (req, res) => {
 app.get(BASE_API_PATH + "/products", (req, res) => {
     console.log(Date() + " - GET /products");
 
-    db.find({}, (err, catalogue) => {
+    db.find({}, (err, products) => {
         if (err) {
-            console.log(Date() + "-" + err);
+            console.log(Date() + " - " + err);
             res.sendStatus(500);
         } else {
-            res.send(catalogue.map((item) => {
+            res.send(products.map((item) => {
                 delete item._id;
                 return item;
             }));
