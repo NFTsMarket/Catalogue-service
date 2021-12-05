@@ -20,7 +20,7 @@ app.get("/", (req, res) => {
     res.send("<html><body><h1>My server</h1></body></html>");
 });
 
-app.get("/healthz", (req, res) => {
+app.get(BASE_API_PATH + "/healthz", (req, res) => {
     res.sendStatus(200);
 });
 
