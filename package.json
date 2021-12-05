@@ -12,10 +12,20 @@
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Luis Gallego",
+  "contributors": [
+    {
+      "name": "Luis Gallego",
+      "email": ""
+    },
+    {
+      "name": "Juan Carlos Alonso Valenzuela",
+      "email": "javalenzuela@us.es"
+    }
+  ],
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
+    "mongoose": "^6.0.14",
     "nedb": "^1.8.0"
   }
 }
