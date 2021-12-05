@@ -1,57 +1,16 @@
-var express = require('express')
-var bodyParser = require('body-parser');
-var DataStore = require('nedb');
+const app = require('./server.js');
+const dbConnect = require('./db.js');
 
-var port = 3000;
-var BASE_API_PATH = "/api/v1";
-var DB_FILE_NAME = __dirname + "/products.json";
+var port = (process.env.PORT || 3000);
 
-console.log("Starting API server...");
+console.log("Starting API server at " + port);
 
-var app = express();
-app.use(bodyParser.json());
-
-var db = new DataStore({
-    filename: DB_FILE_NAME,
-    autoload: true
-});
-
-app.get("/", (req, res) => {
-    res.send("<html><body><h1>My server</h1></body></html>");
-});
-
-app.get(BASE_API_PATH + "/healthz", (req, res) => {
-    res.sendStatus(200);
-});
-
-app.get(BASE_API_PATH + "/products", (req, res) => {
-    console.log(Date() + " - GET /products");
-
-    db.find({}, (err, products) => {
-        if (err) {
-            console.log(Date() + " - " + err);
-            res.sendStatus(500);
-        } else {
-            res.send(products.map((item) => {
-                delete item._id;
-                return item;
-            }));
-        }
-    });
-});
-
-app.post(BASE_API_PATH + "/products", (req, res) => {
-    console.log(Date() + " - POST /products");
-    var item = req.body;
-    db.insert(item, (err) => {
-        if (err) {
-            console.log(Date() + " - " + err);
-            res.sendStatus(500);
-        } else {
-            res.sendStatus(201);
-        }
-    });
-});
-
-app.listen(port);
-console.log("Server ready!");
+dbConnect().then(
+    () => {
+        app.listen(port);
+        console.log("Server ready!");
+    },
+    err => {
+        console.log("Connection error - " + err);
+    }
+);
