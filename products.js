@@ -10,7 +10,7 @@ const productSchema = new mongoose.Schema({
     price: Number,
     categories: String,
     picture: String,
-    deleted: Boolean,
+    // deleted: Boolean,
     createdAt: Date,
     updatedAt: Date
 });
@@ -20,6 +20,7 @@ const productSchema = new mongoose.Schema({
 // For example, in this example we are supressing the "deleted" attribute
 productSchema.methods.cleanup = function() {
     return { 
+        id: this._id,
         title: this.title, 
         slug: this.slug, 
         creator: this.creator, 
@@ -28,8 +29,8 @@ productSchema.methods.cleanup = function() {
         price: this.price,
         categories: this.categories,
         picture: this.picture,
-        createdAt: this.createdAt,
-        updatedAt: this.updatedAt
+        createdAt: this.createdAt.toLocaleDateString("en-US"),
+        updatedAt: this.updatedAt.toLocaleDateString("en-US")
     };
 }
 

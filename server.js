@@ -15,6 +15,7 @@ app.get(BASE_API_PATH + "/healthz", (req, res) => {
     res.sendStatus(200);
 });
 
+// GET PRODUCTS
 app.get(BASE_API_PATH + "/products", (req, res) => {
     console.log(Date() + " - GET /products");
 
@@ -30,10 +31,29 @@ app.get(BASE_API_PATH + "/products", (req, res) => {
     });
 });
 
+// GET PRODUCT BY ID
+app.get(BASE_API_PATH + "/products/:id", (req, res) => {
+    console.log(Date() + " - GET /products/:id");
+    
+    var filter = { _id: req.params.id };
+
+    Product.findOne(filter, function(err, product) {
+        if(err) {
+            console.log(Date() + " - " + err);
+            res.sendStatus(500);
+        } else {
+            res.send(product.cleanup());
+        }
+    });
+});
+
+// CREATE A PRODUCT
 app.post(BASE_API_PATH + "/products", (req, res) => {
     console.log(Date() + " - POST /products");
-    var item = req.body;
-    Product.create(item, (err) => {
+    var product = new Product({ title: req.body.title, slug: "TODO", creator: req.body.creator, owner: req.body.creator, 
+                                description: req.body.description, price: req.body.price, categories: req.body.categories, 
+                                picture: req.body.picture, createdAt: Date(), updatedAt: Date()});
+    Product.create(product, (err) => {
         if (err) {
             console.log(Date() + " - " + err);
             res.sendStatus(500);
@@ -42,5 +62,46 @@ app.post(BASE_API_PATH + "/products", (req, res) => {
         }
     });
 });
+
+// MODIFY A PRODUCT
+app.put(BASE_API_PATH + "/products/:id", (req, res) => {
+    console.log(Date() + " PUT /products");
+
+    var filter = { _id: req.params.id };
+    var update = { $set: {title: req.body.title, owner: req.body.owner, description: req.body.description, 
+        price: req.body.price, categories: req.body.categories, picture: req.body.picture, updatedAt: Date()}};
+    // Product.findOneAndUpdate(filter, req.body, function(err, doc) {
+    Product.findOneAndUpdate(filter, update, function(err, doc) {
+        if(err) {
+            console.log(Date() + " - " + err);
+            res.sendStatus(500);
+        } else {
+            console.log(doc);
+            res.sendStatus(204);
+        }
+    })
+});
+
+// DELETE A PRODUCT
+app.delete(BASE_API_PATH + "/products/:id", (req, res) => {
+    console.log(Date() + " - DELETE /products/:id");
+
+    // If the id is valid simply return a 404 code
+    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+        return res.status(404).send("Product not found");
+      }
+
+    Product.findByIdAndDelete(req.params.id, function(err, product) {
+        if(err) {
+            console.log(Date() + " - " + err);
+        } else if(product) {
+            return res.status(204).send("Product deleted successfully");
+            // return res.send("Product deleted successfully");
+        } else {
+            return res.status(404).send("Product not found");
+            // return ressend("Product not found");
+        }
+    })
+})
 
 module.exports = app;
