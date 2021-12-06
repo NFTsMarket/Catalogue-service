@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 // Product Schema
 const productSchema = new mongoose.Schema({
     title: String,
@@ -8,7 +7,7 @@ const productSchema = new mongoose.Schema({
     owner: String,
     description: String,
     price: Number,
-    categories: String,
+    categories: [{ type: mongoose.Schema.Types.ObjectId, ref: 'category'}],
     picture: String,
     // deleted: Boolean,
     createdAt: Date,
