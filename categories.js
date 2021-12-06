@@ -17,7 +17,6 @@ categorySchema.methods.cleanup = function() {
         id: this._id,
         name: this.title, 
         slug: this.slug, 
-        creator: this.creator, 
         createdAt: this.createdAt.toLocaleDateString("en-US"),
         updatedAt: this.updatedAt.toLocaleDateString("en-US")
     };
