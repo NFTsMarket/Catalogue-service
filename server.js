@@ -1,6 +1,7 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 const Product = require("./products.js");
+const Category = require("./categories.js");
 
 var BASE_API_PATH = "/api/v1";
 
@@ -14,6 +15,9 @@ app.get("/", (req, res) => {
 app.get(BASE_API_PATH + "/healthz", (req, res) => {
     res.sendStatus(200);
 });
+
+
+// PRODUCTS CRUD
 
 // GET PRODUCTS
 app.get(BASE_API_PATH + "/products", (req, res) => {
@@ -103,5 +107,94 @@ app.delete(BASE_API_PATH + "/products/:id", (req, res) => {
         }
     })
 })
+
+
+// CATEGORIES CRUD
+
+// GET CATEGORIES
+app.get(BASE_API_PATH + "/categories", (req, res) => {
+    console.log(Date() + " - GET /categories");
+
+    Category.find({}, (err, categories) => {
+        if (err) {
+            console.log(Date() + " - " + err);
+            res.sendStatus(500);
+        } else {
+            res.send(categories.map((categorie) => {
+                return categorie.cleanup()
+            }));
+        }
+    });
+});
+
+// GET CATEGORY BY ID
+app.get(BASE_API_PATH + "/categories/:id", (req, res) => {
+    console.log(Date() + " - GET /categories/:id");
+    
+    var filter = { _id: req.params.id };
+
+    Category.findOne(filter, function(err, category) {
+        if(err) {
+            console.log(Date() + " - " + err);
+            res.sendStatus(500);
+        } else {
+            res.send(category.cleanup());
+        }
+    });
+});
+
+// CREATE A PRODUCT
+app.post(BASE_API_PATH + "/categories", (req, res) => {
+    console.log(Date() + " - POST /categories");
+    var category = new Category({ name: req.body.name, slug: "TODO",createdAt: Date(), updatedAt: Date()});
+    Category.create(category, (err) => {
+        if (err) {
+            console.log(Date() + " - " + err);
+            res.sendStatus(500);
+        } else {
+            res.sendStatus(201);
+        }
+    });
+});
+
+// MODIFY A PRODUCT
+app.put(BASE_API_PATH + "/categories/:id", (req, res) => {
+    console.log(Date() + " PUT /categories");
+
+    var filter = { _id: req.params.id };
+    var update = { $set: {name: req.body.name, updatedAt: Date()}};
+  
+    Category.findOneAndUpdate(filter, update, function(err, doc) {
+        if(err) {
+            console.log(Date() + " - " + err);
+            res.sendStatus(500);
+        } else {
+            console.log(doc);
+            res.sendStatus(204);
+        }
+    })
+});
+
+// DELETE A PRODUCT
+app.delete(BASE_API_PATH + "/categories/:id", (req, res) => {
+    console.log(Date() + " - DELETE /categories/:id");
+
+    // If the id is not valid simply return a 404 code
+    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+        return res.status(404).send("Category  not found");
+      }
+
+    Category.findByIdAndDelete(req.params.id, function(err, category) {
+        if(err) {
+            console.log(Date() + " - " + err);
+        } else if(category) {
+            return res.status(204).send("Category deleted successfully");
+        } else {
+            return res.status(404).send("Category not found");
+        }
+    })
+})
+
+
 
 module.exports = app;
