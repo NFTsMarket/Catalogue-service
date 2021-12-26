@@ -3,3 +3,5 @@ tag: dev
 api:
   replicaCount: 1
   image: okteto.dev/api
+
+catalogueMongoUrl: mongodb://db/test # Default value

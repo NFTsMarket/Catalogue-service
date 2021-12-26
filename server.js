@@ -60,7 +60,12 @@ app.post(BASE_API_PATH + "/products", (req, res) => {
     Product.create(product, (err) => {
         if (err) {
             console.log(Date() + " - " + err);
-            res.sendStatus(500);
+
+            if(err.errors) {
+                res.status(400).send({error:err.message});
+            } else {
+                res.sendStatus(500);
+            }
         } else {
             res.sendStatus(201);
         }
