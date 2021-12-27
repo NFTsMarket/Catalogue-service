@@ -9,7 +9,7 @@ var app = express();
 app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
-    res.send("<html><body><h1>My server</h1></body></html>");
+    res.send("<html><body><h1>Catalogue API</h1></body></html>");
 });
 
 app.get(BASE_API_PATH + "/healthz", (req, res) => {
@@ -54,7 +54,7 @@ app.get(BASE_API_PATH + "/products/:id", (req, res) => {
 // CREATE A PRODUCT
 app.post(BASE_API_PATH + "/products", (req, res) => {
     console.log(Date() + " - POST /products");
-    var product = new Product({ title: req.body.title, slug: "TODO", creator: req.body.creator, owner: req.body.creator, 
+    var product = new Product({ title: req.body.title, creator: req.body.creator, owner: req.body.creator, 
                                 description: req.body.description, price: req.body.price, categories: req.body.categories, 
                                 picture: req.body.picture, createdAt: Date(), updatedAt: Date()});
     Product.create(product, (err) => {
@@ -151,7 +151,7 @@ app.get(BASE_API_PATH + "/categories/:id", (req, res) => {
 // CREATE A PRODUCT
 app.post(BASE_API_PATH + "/categories", (req, res) => {
     console.log(Date() + " - POST /categories");
-    var category = new Category({ name: req.body.name, slug: "TODO",createdAt: Date(), updatedAt: Date()});
+    var category = new Category({ name: req.body.name, createdAt: Date(), updatedAt: Date()});
     Category.create(category, (err) => {
         if (err) {
             console.log(Date() + " - " + err);
