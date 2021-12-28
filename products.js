@@ -1,8 +1,7 @@
 const mongoose = require("mongoose");
 // Product Schema
 const productSchema = new mongoose.Schema({
-    title: String,
-    slug: String,
+    title: String,              
     creator: String,
     owner: String,
     description: String,
@@ -21,7 +20,6 @@ productSchema.methods.cleanup = function() {
     return { 
         id: this._id,
         title: this.title, 
-        slug: this.slug, 
         creator: this.creator, 
         owner: this.owner, 
         description: this.description,
