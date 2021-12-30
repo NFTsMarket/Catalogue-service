@@ -1,3 +1,3 @@
 deploy:
- - okteto build -t okteto.dev/api:${OKTETO_GIT_COMMIT} .
- - helm upgrade --install catalogue-backend chart --set tag=${OKTETO_GIT_COMMIT} --set catalogueMongoUrl=$CATALOGUE_MONGO_URL
+  - okteto build -t okteto.dev/api:${OKTETO_GIT_COMMIT} .
+  - helm upgrade --install catalogue-backend chart --set tag=${OKTETO_GIT_COMMIT} --set catalogueMongoUrl=$CATALOGUE_MONGO_URL
