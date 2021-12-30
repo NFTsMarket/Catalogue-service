@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 // Category Schema
 const categorySchema = new mongoose.Schema({
     name: String,
-    slug: String,
+    // slug: String,
     // deleted: Boolean,
     createdAt: Date,
     updatedAt: Date
@@ -16,7 +16,7 @@ categorySchema.methods.cleanup = function() {
     return { 
         id: this._id,
         name: this.title, 
-        slug: this.slug, 
+        // slug: this.slug, 
         creator: this.creator, 
         createdAt: this.createdAt.toLocaleDateString("en-US"),
         updatedAt: this.updatedAt.toLocaleDateString("en-US")

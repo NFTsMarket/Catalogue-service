@@ -6,7 +6,6 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    slug: String,
     creator: {
         type: String,
         required: true
@@ -28,7 +27,6 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    // deleted: Boolean,
     createdAt: Date,
     updatedAt: Date
 });
@@ -40,7 +38,6 @@ productSchema.methods.cleanup = function() {
     return { 
         id: this._id,
         title: this.title, 
-        slug: this.slug, 
         creator: this.creator, 
         owner: this.owner, 
         description: this.description,

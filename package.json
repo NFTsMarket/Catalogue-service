@@ -24,8 +24,8 @@
   ],
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1",
-    "mongoose": "^6.0.14",
+    "express": "^4.17.2",
+    "mongoose": "^6.1.4",
     "nedb": "^1.8.0"
   },
   "devDependencies": {
