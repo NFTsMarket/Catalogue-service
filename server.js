@@ -29,8 +29,7 @@ app.get(BASE_API_PATH + "/products", (req, res) => {
     } else {
       res.send(
         products.map((product) => {
-          return product;
-          //.cleanup()
+          return product.cleanup();
         })
       );
     }
@@ -67,6 +66,7 @@ app.post(BASE_API_PATH + "/products", (req, res) => {
     createdAt: Date(),
     updatedAt: Date(),
   };
+
   Product.create(product, (err) => {
     if (err) {
       console.log(Date() + " - " + err);
@@ -124,10 +124,8 @@ app.delete(BASE_API_PATH + "/products/:id", (req, res) => {
       console.log(Date() + " - " + err);
     } else if (product) {
       return res.status(204).send("Product deleted successfully");
-      // return res.send("Product deleted successfully");
     } else {
       return res.status(404).send("Product not found");
-      // return ressend("Product not found");
     }
   });
 });

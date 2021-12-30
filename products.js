@@ -27,8 +27,8 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  createdAt: Date,
-  updatedAt: Date,
+  createdAt: String,
+  updatedAt: String,
 });
 
 // This method returns the attributes we want to obtain in the
@@ -44,8 +44,8 @@ productSchema.methods.cleanup = function () {
     price: this.price,
     categories: this.categories,
     picture: this.picture,
-    createdAt: this.createdAt.toLocaleDateString("en-US"),
-    updatedAt: this.updatedAt.toLocaleDateString("en-US"),
+    createdAt: this.createdAt,
+    updatedAt: this.updatedAt,
   };
 };
 

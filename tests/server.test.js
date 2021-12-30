@@ -74,6 +74,7 @@ describe("Catalogue API", () => {
         .send(product)
         .then((response) => {
           expect(response.statusCode).toBe(201);
+
           expect(dbInsert).toBeCalledWith(
             expect.objectContaining(product),
             expect.any(Function)
