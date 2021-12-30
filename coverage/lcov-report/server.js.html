@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">32.19% </span>
+                <span class="strong">41.34% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>66/205</span>
+                <span class='fraction'>86/208</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80% </span>
+                <span class="strong">77.77% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>4/5</span>
+                <span class='fraction'>7/9</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">32.19% </span>
+                <span class="strong">41.34% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>66/205</span>
+                <span class='fraction'>86/208</span>
             </div>
         
             
@@ -267,7 +267,10 @@
 <a name='L202'></a><a href='#L202'>202</a>
 <a name='L203'></a><a href='#L203'>203</a>
 <a name='L204'></a><a href='#L204'>204</a>
-<a name='L205'></a><a href='#L205'>205</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L205'></a><a href='#L205'>205</a>
+<a name='L206'></a><a href='#L206'>206</a>
+<a name='L207'></a><a href='#L207'>207</a>
+<a name='L208'></a><a href='#L208'>208</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -306,6 +309,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -322,24 +326,26 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -502,7 +508,8 @@ app.get(BASE_API_PATH + "/products", (req, res) =&gt; {
 <span class="cstat-no" title="statement not covered" >            res.sendStatus(500);</span>
         } else {
             res.send(products.map((product) =&gt; {
-                return product.cleanup()
+                return product
+                //.cleanup()
             }));
         }
     });
@@ -526,24 +533,26 @@ app.get(BASE_API_PATH + "/products/:id", (req, res) =&gt; {
 &nbsp;
 // CREATE A PRODUCT
 app.post(BASE_API_PATH + "/products", (req, res) =&gt; {
-<span class="cstat-no" title="statement not covered" >    console.log(Date() + " - POST /products");</span>
-<span class="cstat-no" title="statement not covered" >    var product = new Product({ title: req.body.title, creator: req.body.creator, owner: req.body.creator, </span>
-<span class="cstat-no" title="statement not covered" >                                description: req.body.description, price: req.body.price, categories: req.body.categories, </span>
-<span class="cstat-no" title="statement not covered" >                                picture: req.body.picture, createdAt: Date(), updatedAt: Date()});</span>
-<span class="cstat-no" title="statement not covered" >    Product.create(product, (err) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        if (err) {</span>
-<span class="cstat-no" title="statement not covered" >            console.log(Date() + " - " + err);</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >            if(err.errors) {</span>
+    console.log(Date() + " - POST /products");
+    var product = { title: req.body.title, creator: req.body.creator, 
+                                owner: req.body.creator, 
+                                description: req.body.description, price: req.body.price, categories: req.body.categories, 
+                                picture: req.body.picture, createdAt: Date(), updatedAt: Date()
+                            };
+    Product.create(product, (err) =&gt; {
+        if (err) {
+            console.log(Date() + " - " + err);
+&nbsp;
+            if(err.errors) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
 <span class="cstat-no" title="statement not covered" >                res.status(400).send({error:err.message});</span>
-<span class="cstat-no" title="statement not covered" >            } else {</span>
-<span class="cstat-no" title="statement not covered" >                res.sendStatus(500);</span>
-<span class="cstat-no" title="statement not covered" >            }</span>
-<span class="cstat-no" title="statement not covered" >        } else {</span>
-<span class="cstat-no" title="statement not covered" >            res.sendStatus(201);</span>
-<span class="cstat-no" title="statement not covered" >        }</span>
-<span class="cstat-no" title="statement not covered" >    });</span>
-<span class="cstat-no" title="statement not covered" >});</span>
+            } else {
+                res.sendStatus(500);
+            }
+        } else {
+            res.sendStatus(201);
+        }
+    });
+});
 &nbsp;
 // MODIFY A PRODUCT
 app.put(BASE_API_PATH + "/products/:id", (req, res) =&gt; {
@@ -682,7 +691,7 @@ module.exports = app;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener">istanbul</a>
-                at Mon Dec 27 2021 23:41:39 GMT+0000 (Coordinated Universal Time)
+                at Thu Dec 30 2021 19:55:35 GMT+0000 (Coordinated Universal Time)
             </div>
         <script src="prettify.js"></script>
         <script>
