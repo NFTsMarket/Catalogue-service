@@ -120,7 +120,7 @@ app.put(BASE_API_PATH + "/products/:id", (req, res) => {
           console.log(doc);
           res.sendStatus(204);
         } else {
-          res.sendStatus(404).send("Product not found");
+          res.status(404).send("Product not found");
         }
       }
     }
@@ -139,10 +139,11 @@ app.delete(BASE_API_PATH + "/products/:id", (req, res) => {
   Product.findByIdAndDelete(req.params.id, function (err, product) {
     if (err) {
       console.log(Date() + " - " + err);
+      res.sendStatus(500);
     } else if (product) {
-      return res.status(204).send("Product deleted successfully");
+      res.sendStatus(204);
     } else {
-      return res.status(404).send("Product not found");
+      res.status(404).send("Product not found");
     }
   });
 });
