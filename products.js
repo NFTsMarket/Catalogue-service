@@ -17,6 +17,7 @@ const productSchema = new mongoose.Schema({
   },
   price: {
     type: Number,
+    min: [0, "Price cannot be negative, inserted: {VALUE}"],
     required: true,
   },
   categories: {
@@ -26,6 +27,14 @@ const productSchema = new mongoose.Schema({
   picture: {
     type: String,
     required: true,
+    validate: {
+      validator: function (v) {
+        return /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/.test(
+          v
+        );
+      },
+      msg: "Please, insert a valid url in the property {PATH}, inserted: '{VALUE}'",
+    },
   },
   createdAt: String,
   updatedAt: String,
