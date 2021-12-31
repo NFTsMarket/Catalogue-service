@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1640958228057" clover="3.2.0">
-  <project timestamp="1640958228058" name="All files">
-    <metrics statements="326" coveredstatements="185" conditionals="13" coveredconditionals="12" methods="4" coveredmethods="3" elements="343" coveredelements="200" complexity="0" loc="326" ncloc="326" packages="1" files="4" classes="4"/>
+<coverage generated="1640962332649" clover="3.2.0">
+  <project timestamp="1640962332649" name="All files">
+    <metrics statements="329" coveredstatements="188" conditionals="13" coveredconditionals="12" methods="4" coveredmethods="3" elements="346" coveredelements="203" complexity="0" loc="329" ncloc="329" packages="1" files="4" classes="4"/>
     <file name="categories.js" path="/workspace/categories.js">
       <metrics statements="26" coveredstatements="18" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
       <line num="1" count="1" type="stmt"/>
@@ -47,7 +47,7 @@
       <line num="12" count="1" type="stmt"/>
     </file>
     <file name="products.js" path="/workspace/products.js">
-      <metrics statements="64" coveredstatements="64" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
+      <metrics statements="67" coveredstatements="67" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
       <line num="1" count="1" type="stmt"/>
       <line num="2" count="1" type="stmt"/>
       <line num="3" count="1" type="stmt"/>
@@ -78,10 +78,10 @@
       <line num="28" count="1" type="stmt"/>
       <line num="29" count="1" type="stmt"/>
       <line num="30" count="1" type="stmt"/>
-      <line num="31" count="1" type="cond" truecount="1" falsecount="0"/>
+      <line num="31" count="1" type="stmt"/>
       <line num="32" count="1" type="stmt"/>
       <line num="33" count="1" type="stmt"/>
-      <line num="34" count="1" type="stmt"/>
+      <line num="34" count="1" type="cond" truecount="1" falsecount="0"/>
       <line num="35" count="1" type="stmt"/>
       <line num="36" count="1" type="stmt"/>
       <line num="37" count="1" type="stmt"/>
@@ -93,10 +93,10 @@
       <line num="43" count="1" type="stmt"/>
       <line num="44" count="1" type="stmt"/>
       <line num="45" count="1" type="stmt"/>
-      <line num="46" count="1" type="cond" truecount="1" falsecount="0"/>
+      <line num="46" count="1" type="stmt"/>
       <line num="47" count="1" type="stmt"/>
       <line num="48" count="1" type="stmt"/>
-      <line num="49" count="1" type="stmt"/>
+      <line num="49" count="1" type="cond" truecount="1" falsecount="0"/>
       <line num="50" count="1" type="stmt"/>
       <line num="51" count="1" type="stmt"/>
       <line num="52" count="1" type="stmt"/>
@@ -112,6 +112,9 @@
       <line num="62" count="1" type="stmt"/>
       <line num="63" count="1" type="stmt"/>
       <line num="64" count="1" type="stmt"/>
+      <line num="65" count="1" type="stmt"/>
+      <line num="66" count="1" type="stmt"/>
+      <line num="67" count="1" type="stmt"/>
     </file>
     <file name="server.js" path="/workspace/server.js">
       <metrics statements="224" coveredstatements="91" conditionals="10" coveredconditionals="9" methods="0" coveredmethods="0"/>

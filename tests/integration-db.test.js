@@ -19,6 +19,7 @@ describe("Products DB connection", () => {
     const product = new Product({
       title: "second product",
       creator: "creator2",
+      owner: "creator2",
       description: "Description of my second product",
       price: 20.0,
       categories: "category2",

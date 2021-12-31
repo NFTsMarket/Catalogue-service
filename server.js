@@ -98,15 +98,24 @@ app.put(BASE_API_PATH + "/products/:id", (req, res) => {
       updatedAt: Date(),
     },
   };
-  Product.findOneAndUpdate(filter, update, function (err, doc) {
-    if (err) {
-      console.log(Date() + " - " + err);
-      res.sendStatus(500);
-    } else {
-      console.log(doc);
-      res.sendStatus(204);
+  Product.findOneAndUpdate(
+    filter,
+    update,
+    { runValidators: true },
+    function (err, doc) {
+      if (err) {
+        console.log(Date() + " - " + err);
+        if (err.errors) {
+          res.status(400).send({ error: err.message });
+        } else {
+          res.sendStatus(500);
+        }
+      } else {
+        console.log(doc);
+        res.sendStatus(204);
+      }
     }
-  });
+  );
 });
 
 // DELETE A PRODUCT
