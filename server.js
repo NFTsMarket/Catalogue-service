@@ -98,7 +98,6 @@ app.put(BASE_API_PATH + "/products/:id", (req, res) => {
       updatedAt: Date(),
     },
   };
-  // Product.findOneAndUpdate(filter, req.body, function(err, doc) {
   Product.findOneAndUpdate(filter, update, function (err, doc) {
     if (err) {
       console.log(Date() + " - " + err);

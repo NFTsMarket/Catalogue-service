@@ -94,5 +94,19 @@ describe("Catalogue API", () => {
           expect(response.statusCode).toBe(500);
         });
     });
+
+    it("Should return a client error (400 code) when inserting an invalid value", () => {
+      dbInsert.mockImplementation((p, callback) => {
+        callback({ message: "Invalid input", errors: true });
+      });
+
+      return request(app)
+        .post("/api/v1/products")
+        .send(product)
+        .then((response) => {
+          expect(response.statusCode).toBe(400);
+          expect(response.body).toHaveProperty("error", "Invalid input");
+        });
+    });
   });
 });
