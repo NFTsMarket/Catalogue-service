@@ -111,8 +111,12 @@ app.put(BASE_API_PATH + "/products/:id", (req, res) => {
           res.sendStatus(500);
         }
       } else {
-        console.log(doc);
-        res.sendStatus(204);
+        if (doc) {
+          console.log(doc);
+          res.sendStatus(204);
+        } else {
+          res.sendStatus(404);
+        }
       }
     }
   );
