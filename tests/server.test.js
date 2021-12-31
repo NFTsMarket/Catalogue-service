@@ -1,6 +1,7 @@
 const app = require("../server.js");
 const Product = require("../products.js");
 const request = require("supertest");
+const { response } = require("../server.js");
 
 describe("Catalogue API", () => {
   describe("GET /", () => {
@@ -206,6 +207,65 @@ describe("Catalogue API", () => {
         .send(update)
         .then((response) => {
           expect(response.statusCode).toBe(404);
+        });
+    });
+  });
+
+  describe("DELETE /products", () => {
+    const id = "61cf2762645dc30315a132b6";
+
+    beforeEach(() => {
+      dbRemove = jest.spyOn(Product, "findByIdAndDelete");
+    });
+
+    // 204 code
+    it("Should remove an existing product", () => {
+      dbRemove.mockImplementation((i, callback) => {
+        callback(false, true);
+      });
+
+      return request(app)
+        .delete("/api/v1/products/" + id)
+        .then((response) => {
+          expect(response.statusCode).toBe(204);
+          expect(dbRemove).toBeCalledWith(id, expect.any(Function));
+        });
+    });
+
+    it("Should return a server error (500 code)", () => {
+      dbRemove.mockImplementation((i, callback) => {
+        callback(true, true);
+      });
+
+      return request(app)
+        .delete("/api/v1/products/" + id)
+        .then((response) => {
+          expect(response.statusCode).toBe(500);
+          expect(dbRemove).toBeCalledWith(id, expect.any(Function));
+        });
+    });
+
+    it("Should return a client error (404 code) when inserting an invalid DB id", () => {
+      dbRemove.mockImplementation((i, callback) => {
+        callback(false, true);
+      });
+
+      return request(app)
+        .delete("/api/v1/products/1234")
+        .then((response) => {
+          expect(response.statusCode).toBe(404);
+        });
+    });
+
+    it("Should return a client error (404 code) when inserting a non-existing DB id", () => {
+      dbRemove.mockImplementation((i, callback) => {
+        callback(false, false);
+      });
+      return request(app)
+        .delete("/api/v1/products/" + id)
+        .then((response) => {
+          expect(response.statusCode).toBe(404);
+          expect(dbRemove).toBeCalledWith(id, expect.any(Function));
         });
     });
   });
