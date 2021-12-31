@@ -155,5 +155,58 @@ describe("Catalogue API", () => {
           );
         });
     });
+
+    it("Should return a client error (400 code)", () => {
+      dbUpdate.mockImplementation((f, update, v, callback) => {
+        callback({ errors: true, message: "Invalid input" }, null);
+      });
+
+      return request(app)
+        .put("/api/v1/products/" + id)
+        .send(update)
+        .then((response) => {
+          expect(response.statusCode).toBe(400);
+          expect(response.body).toHaveProperty("error", "Invalid input");
+        });
+    });
+
+    it("Should return 500 if there is a problem with the DB", () => {
+      dbUpdate.mockImplementation((f, update, v, callback) => {
+        callback(true, null);
+      });
+
+      return request(app)
+        .put("/api/v1/products/" + id)
+        .send(update)
+        .then((response) => {
+          expect(response.statusCode).toBe(500);
+        });
+    });
+
+    it("Should return 404 if the user inserts an invalid database id", () => {
+      dbUpdate.mockImplementation((f, update, v, callback) => {
+        callback(false, true);
+      });
+
+      return request(app)
+        .put("/api/v1/products/1234")
+        .send(update)
+        .then((response) => {
+          expect(response.statusCode).toBe(404);
+        });
+    });
+
+    it("Should return 404 if the user inserts a non-existing DB id", () => {
+      dbUpdate.mockImplementation((f, update, v, callback) => {
+        callback(false, false);
+      });
+
+      return request(app)
+        .put("/api/v1/products/" + id)
+        .send(update)
+        .then((response) => {
+          expect(response.statusCode).toBe(404);
+        });
+    });
   });
 });

@@ -88,7 +88,7 @@ app.put(BASE_API_PATH + "/products/:id", (req, res) => {
 
   // If the id is valid simply return a 404 code
   if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
-    return res.status(404).send("Product not found");
+    return res.status(404).send("Please, insert a valid database id");
   }
 
   var filter = { _id: req.params.id };
@@ -133,7 +133,7 @@ app.delete(BASE_API_PATH + "/products/:id", (req, res) => {
 
   // If the id is valid simply return a 404 code
   if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
-    return res.status(404).send("Product not found");
+    return res.status(404).send("Please, insert a valid database id");
   }
 
   Product.findByIdAndDelete(req.params.id, function (err, product) {
