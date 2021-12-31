@@ -17,35 +17,48 @@ describe("Catalogue API", () => {
   });
 
   describe("GET /products", () => {
-    // Defining a Mock
-    beforeAll(() => {
-      const products = [
-        new Product({
-          title: "second product",
-          creator: "creator2",
-          description: "Description of my second product",
-          price: 20.0,
-          categories: "category2",
-          picture: "www.url2.com",
-        }),
-      ];
+    const products = [
+      new Product({
+        title: "second product",
+        creator: "creator2",
+        description: "Description of my second product",
+        price: 20.0,
+        categories: "category2",
+        picture: "www.url2.com",
+      }),
+    ];
 
+    let dbFind;
+    // Defining a Mock
+    beforeEach(() => {
+      // Default implementation (Parameters received by find in server.js)
       // Spy on mock function
       dbFind = jest.spyOn(Product, "find");
-
-      // Default implementation (Parameters received by find in server.js)
-      dbFind.mockImplementation((query, callback) => {
-        callback(null, products);
-      });
     });
 
     it("Should return all products", () => {
+      dbFind.mockImplementation((query, callback) => {
+        callback(null, products);
+      });
+
       return request(app)
         .get("/api/v1/products")
         .then((response) => {
           expect(response.statusCode).toBe(200);
           expect(response.body).toHaveLength(1);
           expect(dbFind).toBeCalledWith({}, expect.any(Function));
+        });
+    });
+
+    it("Should return a server error (500 code)", () => {
+      dbFind.mockImplementation((query, callback) => {
+        callback(true, products);
+      });
+
+      return request(app)
+        .get("/api/v1/products")
+        .then((response) => {
+          expect(response.statusCode).toBe(500);
         });
     });
   });
