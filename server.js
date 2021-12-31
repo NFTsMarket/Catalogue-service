@@ -86,6 +86,11 @@ app.post(BASE_API_PATH + "/products", (req, res) => {
 app.put(BASE_API_PATH + "/products/:id", (req, res) => {
   console.log(Date() + " PUT /products");
 
+  // If the id is valid simply return a 404 code
+  if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+    return res.status(404).send("Product not found");
+  }
+
   var filter = { _id: req.params.id };
   var update = {
     $set: {
@@ -115,7 +120,7 @@ app.put(BASE_API_PATH + "/products/:id", (req, res) => {
           console.log(doc);
           res.sendStatus(204);
         } else {
-          res.sendStatus(404);
+          res.sendStatus(404).send("Product not found");
         }
       }
     }
@@ -178,7 +183,7 @@ app.get(BASE_API_PATH + "/categories/:id", (req, res) => {
   });
 });
 
-// CREATE A PRODUCT
+// CREATE A CATEGORY
 app.post(BASE_API_PATH + "/categories", (req, res) => {
   console.log(Date() + " - POST /categories");
   var category = new Category({
@@ -196,7 +201,7 @@ app.post(BASE_API_PATH + "/categories", (req, res) => {
   });
 });
 
-// MODIFY A PRODUCT
+// MODIFY A CATEGORY
 app.put(BASE_API_PATH + "/categories/:id", (req, res) => {
   console.log(Date() + " PUT /categories");
 
@@ -214,7 +219,7 @@ app.put(BASE_API_PATH + "/categories/:id", (req, res) => {
   });
 });
 
-// DELETE A PRODUCT
+// DELETE A CATEGORY
 app.delete(BASE_API_PATH + "/categories/:id", (req, res) => {
   console.log(Date() + " - DELETE /categories/:id");
 

@@ -109,4 +109,51 @@ describe("Catalogue API", () => {
         });
     });
   });
+
+  describe("PUT /products", () => {
+    const id = "61cf2762645dc30315a132b6";
+    let dbUpdate;
+    const update = {
+      title: "new title",
+      owner: "new owner",
+      description: "new description",
+      price: 12.0,
+      categories: "new categories",
+      picture: "www.newPicture.com",
+    };
+
+    beforeEach(() => {
+      dbUpdate = jest.spyOn(Product, "findOneAndUpdate");
+    });
+
+    // 204 code
+    it("Should update an existing product", () => {
+      dbUpdate.mockImplementation((f, update, v, callback) => {
+        callback(null, true);
+      });
+
+      return request(app)
+        .put("/api/v1/products/" + id)
+        .send(update)
+        .then((response) => {
+          expect(response.statusCode).toBe(204);
+          expect(dbUpdate).toBeCalledWith(
+            { _id: id },
+            expect.objectContaining({
+              $set: {
+                categories: update.categories,
+                description: update.description,
+                owner: update.owner,
+                picture: update.picture,
+                price: update.price,
+                title: update.title,
+                updatedAt: expect.any(String),
+              },
+            }),
+            { runValidators: true },
+            expect.any(Function)
+          );
+        });
+    });
+  });
 });
