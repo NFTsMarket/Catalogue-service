@@ -40,14 +40,21 @@ app.get(BASE_API_PATH + "/products", (req, res) => {
 app.get(BASE_API_PATH + "/products/:id", (req, res) => {
   console.log(Date() + " - GET /products/:id");
 
+  // If the id is valid simply return a 404 code
+  if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+    return res.status(404).send("Please, insert a valid database id");
+  }
+
   var filter = { _id: req.params.id };
 
   Product.findOne(filter, function (err, product) {
     if (err) {
       console.log(Date() + " - " + err);
       res.sendStatus(500);
-    } else {
+    } else if (product) {
       res.send(product.cleanup());
+    } else {
+      res.status(404).send("Product not found");
     }
   });
 });
