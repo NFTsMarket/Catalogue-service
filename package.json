@@ -11,7 +11,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "jest",
-    "integration:": "jest -c jest.integration.config.js"
+    "integration": "jest -c jest.integration.config.js"
   },
   "contributors": [
     {
