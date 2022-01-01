@@ -1,6 +1,6 @@
-const Product = require("../products.js");
+const Product = require("../../products.js");
 const mongoose = require("mongoose");
-const dbConnect = require("../db");
+const dbConnect = require("../../db");
 
 describe("Products DB connection", () => {
   // Connect to the database
