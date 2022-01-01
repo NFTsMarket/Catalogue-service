@@ -282,4 +282,70 @@ describe("Catalogue API", () => {
         });
     });
   });
+
+  describe("/GET /products/:id", () => {
+    const id = "61cf2762645dc30315a132b6";
+
+    const product = new Product({
+      title: "my product",
+      creator: "creator1",
+      description: "Description of my product",
+      price: 20.0,
+      categories: "category",
+      picture: "www.url.com",
+    });
+
+    beforeEach(() => {
+      dbFindOne = jest.spyOn(Product, "findOne");
+    });
+
+    it("Should return an existing product", () => {
+      dbFindOne.mockImplementation((i, callback) => {
+        callback(false, product);
+      });
+
+      return request(app)
+        .get("/api/v1/products/" + id)
+        .then((response) => {
+          expect(response.statusCode).toBe(200);
+          expect(dbFindOne).toBeCalledWith({ _id: id }, expect.any(Function));
+        });
+    });
+
+    it("Should return a server error (500 code)", () => {
+      dbFindOne.mockImplementation((i, callback) => {
+        callback(true, product);
+      });
+
+      return request(app)
+        .get("/api/v1/products/" + id)
+        .then((response) => {
+          expect(response.statusCode).toBe(500);
+        });
+    });
+
+    it("Should return a client error (404 code) when inserting an invalid id", () => {
+      dbFindOne.mockImplementation((i, callback) => {
+        callback(false, product);
+      });
+
+      return request(app)
+        .get("/api/v1/products/1234")
+        .then((response) => {
+          expect(response.statusCode).toBe(404);
+        });
+    });
+
+    it("Should return a client error (404 code) when inserting a non-existing DB id", () => {
+      dbFindOne.mockImplementation((i, callback) => {
+        callback(false, null);
+      });
+
+      return request(app)
+        .get("/api/v1/products/" + id)
+        .then((response) => {
+          expect(response.statusCode).toBe(404);
+        });
+    });
+  });
 });
