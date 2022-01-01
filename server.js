@@ -180,14 +180,21 @@ app.get(BASE_API_PATH + "/categories", (req, res) => {
 app.get(BASE_API_PATH + "/categories/:id", (req, res) => {
   console.log(Date() + " - GET /categories/:id");
 
-  var filter = { _id: req.params.id };
+  // If the id is valid simply return a 404 code
+  if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+    return res.status(404).send("Please, insert a valid database id");
+  }
 
+  var filter = { _id: req.params.id };
   Category.findOne(filter, function (err, category) {
     if (err) {
       console.log(Date() + " - " + err);
       res.sendStatus(500);
+    } else if (category) {
+      console.log(JSON.stringify(category));
+      res.status(200).send(category.cleanup());
     } else {
-      res.send(category.cleanup());
+      res.status(404).send("Category not found");
     }
   });
 });
@@ -214,16 +221,29 @@ app.post(BASE_API_PATH + "/categories", (req, res) => {
 app.put(BASE_API_PATH + "/categories/:id", (req, res) => {
   console.log(Date() + " PUT /categories");
 
+  // If the id is valid simply return a 404 code
+  if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+    return res.status(404).send("Please, insert a valid database id");
+  }
+
   var filter = { _id: req.params.id };
   var update = { $set: { name: req.body.name, updatedAt: Date() } };
 
-  Category.findOneAndUpdate(filter, update, function (err, doc) {
+  Category.findOneAndUpdate(filter, update, function (err, category) {
     if (err) {
       console.log(Date() + " - " + err);
-      res.sendStatus(500);
+      if (err.errors) {
+        res.status(400).send({ error: err.message });
+      } else {
+        res.sendStatus(500);
+      }
     } else {
-      console.log(doc);
-      res.sendStatus(204);
+      if (category) {
+        console.log(category);
+        res.sendStatus(204);
+      } else {
+        res.status(404).send("Category not found");
+      }
     }
   });
 });
@@ -240,10 +260,11 @@ app.delete(BASE_API_PATH + "/categories/:id", (req, res) => {
   Category.findByIdAndDelete(req.params.id, function (err, category) {
     if (err) {
       console.log(Date() + " - " + err);
+      res.sendStatus(500);
     } else if (category) {
-      return res.status(204).send("Category deleted successfully");
+      res.sendStatus(204);
     } else {
-      return res.status(404).send("Category not found");
+      res.status(404).send("Category not found");
     }
   });
 });
