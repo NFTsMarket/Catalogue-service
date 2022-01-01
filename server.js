@@ -40,14 +40,22 @@ app.get(BASE_API_PATH + "/products", (req, res) => {
 app.get(BASE_API_PATH + "/products/:id", (req, res) => {
   console.log(Date() + " - GET /products/:id");
 
+  // If the id is valid simply return a 404 code
+  if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+    return res.status(404).send("Please, insert a valid database id");
+  }
+
   var filter = { _id: req.params.id };
 
   Product.findOne(filter, function (err, product) {
     if (err) {
       console.log(Date() + " - " + err);
       res.sendStatus(500);
+    } else if (product) {
+      console.log(JSON.stringify(product));
+      res.status(200).send(product.cleanup());
     } else {
-      res.send(product.cleanup());
+      res.status(404).send("Product not found");
     }
   });
 });
@@ -86,6 +94,11 @@ app.post(BASE_API_PATH + "/products", (req, res) => {
 app.put(BASE_API_PATH + "/products/:id", (req, res) => {
   console.log(Date() + " PUT /products");
 
+  // If the id is valid simply return a 404 code
+  if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+    return res.status(404).send("Please, insert a valid database id");
+  }
+
   var filter = { _id: req.params.id };
   var update = {
     $set: {
@@ -98,16 +111,28 @@ app.put(BASE_API_PATH + "/products/:id", (req, res) => {
       updatedAt: Date(),
     },
   };
-  // Product.findOneAndUpdate(filter, req.body, function(err, doc) {
-  Product.findOneAndUpdate(filter, update, function (err, doc) {
-    if (err) {
-      console.log(Date() + " - " + err);
-      res.sendStatus(500);
-    } else {
-      console.log(doc);
-      res.sendStatus(204);
+  Product.findOneAndUpdate(
+    filter,
+    update,
+    { runValidators: true },
+    function (err, doc) {
+      if (err) {
+        console.log(Date() + " - " + err);
+        if (err.errors) {
+          res.status(400).send({ error: err.message });
+        } else {
+          res.sendStatus(500);
+        }
+      } else {
+        if (doc) {
+          console.log(doc);
+          res.sendStatus(204);
+        } else {
+          res.status(404).send("Product not found");
+        }
+      }
     }
-  });
+  );
 });
 
 // DELETE A PRODUCT
@@ -116,16 +141,17 @@ app.delete(BASE_API_PATH + "/products/:id", (req, res) => {
 
   // If the id is valid simply return a 404 code
   if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
-    return res.status(404).send("Product not found");
+    return res.status(404).send("Please, insert a valid database id");
   }
 
   Product.findByIdAndDelete(req.params.id, function (err, product) {
     if (err) {
       console.log(Date() + " - " + err);
+      res.sendStatus(500);
     } else if (product) {
-      return res.status(204).send("Product deleted successfully");
+      res.sendStatus(204);
     } else {
-      return res.status(404).send("Product not found");
+      res.status(404).send("Product not found");
     }
   });
 });
@@ -166,7 +192,7 @@ app.get(BASE_API_PATH + "/categories/:id", (req, res) => {
   });
 });
 
-// CREATE A PRODUCT
+// CREATE A CATEGORY
 app.post(BASE_API_PATH + "/categories", (req, res) => {
   console.log(Date() + " - POST /categories");
   var category = new Category({
@@ -184,7 +210,7 @@ app.post(BASE_API_PATH + "/categories", (req, res) => {
   });
 });
 
-// MODIFY A PRODUCT
+// MODIFY A CATEGORY
 app.put(BASE_API_PATH + "/categories/:id", (req, res) => {
   console.log(Date() + " PUT /categories");
 
@@ -202,7 +228,7 @@ app.put(BASE_API_PATH + "/categories/:id", (req, res) => {
   });
 });
 
-// DELETE A PRODUCT
+// DELETE A CATEGORY
 app.delete(BASE_API_PATH + "/categories/:id", (req, res) => {
   console.log(Date() + " - DELETE /categories/:id");
 
