@@ -6,7 +6,10 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  test:
+    uses: NFTsMarket/Catalogue-service/.github/workflows/tests.yml@main
+  deploy:
+    needs: test
     runs-on: ubuntu-latest
 
     steps:

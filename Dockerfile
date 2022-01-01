@@ -1,4 +1,4 @@
-FROM node:9-alpine
+FROM node:12-alpine
 
 WORKDIR /app
 
@@ -8,6 +8,10 @@ COPY package-lock.json .
 RUN npm install
 
 COPY index.js .
+COPY db.js .
+COPY server.js .
+COPY products.js .
+COPY categories.js .
 
 EXPOSE 3000
 
