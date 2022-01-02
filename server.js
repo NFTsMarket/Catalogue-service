@@ -168,8 +168,8 @@ app.get(BASE_API_PATH + "/categories", (req, res) => {
       res.sendStatus(500);
     } else {
       res.send(
-        categories.map((categorie) => {
-          return categorie.cleanup();
+        categories.map((category) => {
+          return category.cleanup();
         })
       );
     }
@@ -207,10 +207,16 @@ app.post(BASE_API_PATH + "/categories", (req, res) => {
     createdAt: Date(),
     updatedAt: Date(),
   });
+
   Category.create(category, (err) => {
     if (err) {
       console.log(Date() + " - " + err);
-      res.sendStatus(500);
+
+      if (err.errors) {
+        res.status(400).send({ error: err.message });
+      } else {
+        res.sendStatus(500);
+      }
     } else {
       res.sendStatus(201);
     }
@@ -229,23 +235,28 @@ app.put(BASE_API_PATH + "/categories/:id", (req, res) => {
   var filter = { _id: req.params.id };
   var update = { $set: { name: req.body.name, updatedAt: Date() } };
 
-  Category.findOneAndUpdate(filter, update, function (err, category) {
-    if (err) {
-      console.log(Date() + " - " + err);
-      if (err.errors) {
-        res.status(400).send({ error: err.message });
+  Category.findOneAndUpdate(
+    filter,
+    update,
+    { runValidators: true },
+    function (err, doc) {
+      if (err) {
+        console.log(Date() + " - " + err);
+        if (err.errors) {
+          res.status(400).send({ error: err.message });
+        } else {
+          res.sendStatus(500);
+        }
       } else {
-        res.sendStatus(500);
-      }
-    } else {
-      if (category) {
-        console.log(category);
-        res.sendStatus(204);
-      } else {
-        res.status(404).send("Category not found");
+        if (doc) {
+          console.log(doc);
+          res.sendStatus(204);
+        } else {
+          res.status(404).send("Category not found");
+        }
       }
     }
-  });
+  );
 });
 
 // DELETE A CATEGORY
