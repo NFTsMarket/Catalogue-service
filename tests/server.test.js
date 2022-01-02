@@ -1,5 +1,6 @@
 const app = require("../server.js");
 const Product = require("../products.js");
+const Category = require("../categories.js");
 const request = require("supertest");
 const { response } = require("../server.js");
 
@@ -63,6 +64,48 @@ describe("Catalogue API", () => {
     });
   });
 
+  describe("GET /categories", () => {
+    const categories = [
+      new Category({
+        name: "category1",
+      }),
+    ];
+
+    let dbFind;
+    // Defining a Mock
+    beforeEach(() => {
+      // Default implementation (Parameters received by find in server.js)
+      // Spy on mock function
+      dbFind = jest.spyOn(Category, "find");
+    });
+
+    it("Should return all categories", () => {
+      dbFind.mockImplementation((query, callback) => {
+        callback(null, categories);
+      });
+
+      return request(app)
+        .get("/api/v1/categories")
+        .then((response) => {
+          expect(response.statusCode).toBe(200);
+          expect(response.body).toHaveLength(1);
+          expect(dbFind).toBeCalledWith({}, expect.any(Function));
+        });
+    });
+
+    it("Should return a server error (500 code)", () => {
+      dbFind.mockImplementation((query, callback) => {
+        callback(true, categories);
+      });
+
+      return request(app)
+        .get("/api/v1/categories")
+        .then((response) => {
+          expect(response.statusCode).toBe(500);
+        });
+    });
+  });
+
   describe("POST /products", () => {
     const product = {
       title: "myProduct",
@@ -117,6 +160,62 @@ describe("Catalogue API", () => {
       return request(app)
         .post("/api/v1/products")
         .send(product)
+        .then((response) => {
+          expect(response.statusCode).toBe(400);
+          expect(response.body).toHaveProperty("error", "Invalid input");
+        });
+    });
+  });
+
+  describe("POST /categories", () => {
+    const category = {
+      name: "category2",
+    };
+    let dbInsert;
+
+    beforeEach(() => {
+      dbInsert = jest.spyOn(Category, "create");
+    });
+
+    it("Should add a new category", () => {
+      dbInsert.mockImplementation((c, callback) => {
+        callback(false);
+      });
+
+      return request(app)
+        .post("/api/v1/categories")
+        .send(category)
+        .then((response) => {
+          expect(response.statusCode).toBe(201);
+
+          expect(dbInsert).toBeCalledWith(
+            expect.objectContaining(category),
+            expect.any(Function)
+          );
+        });
+    });
+
+    it("Should return 500 if there is a problem with the DB", () => {
+      dbInsert.mockImplementation((c, callback) => {
+        callback(true);
+      });
+
+      return request(app)
+        .post("/api/v1/categories")
+        .send(category)
+        .then((response) => {
+          expect(response.statusCode).toBe(500);
+        });
+    });
+
+    it("Should return a client error (400 code) when inserting an invalid value", () => {
+      dbInsert.mockImplementation((p, callback) => {
+        callback({ message: "Invalid input", errors: true });
+      });
+
+      return request(app)
+        .post("/api/v1/categories")
+        .send(category)
         .then((response) => {
           expect(response.statusCode).toBe(400);
           expect(response.body).toHaveProperty("error", "Invalid input");
@@ -224,6 +323,96 @@ describe("Catalogue API", () => {
     });
   });
 
+  describe("PUT /categories", () => {
+    const id = "61cf2762645dc30315a132b6";
+    let dbUpdate;
+    const update = {
+      name: "new name",
+    };
+
+    beforeEach(() => {
+      dbUpdate = jest.spyOn(Category, "findOneAndUpdate");
+    });
+
+    // 204 code
+    it("Should update an existing category", () => {
+      dbUpdate.mockImplementation((f, update, v, callback) => {
+        callback(null, true);
+      });
+
+      return request(app)
+        .put("/api/v1/categories/" + id)
+        .send(update)
+        .then((response) => {
+          expect(response.statusCode).toBe(204);
+          expect(dbUpdate).toBeCalledWith(
+            { _id: id },
+            expect.objectContaining({
+              $set: {
+                name: update.name,
+                updatedAt: expect.any(String),
+              },
+            }),
+            { runValidators: true },
+            expect.any(Function)
+          );
+        });
+    });
+
+    it("Should return a client error (400 code)", () => {
+      dbUpdate.mockImplementation((f, update, v, callback) => {
+        callback({ errors: true, message: "Invalid input" }, null);
+      });
+
+      return request(app)
+        .put("/api/v1/categories/" + id)
+        .send(update)
+        .then((response) => {
+          expect(response.statusCode).toBe(400);
+          expect(response.body).toHaveProperty("error", "Invalid input");
+        });
+    });
+
+    it("Should return 500 if there is a problem with the DB", () => {
+      dbUpdate.mockImplementation((f, update, v, callback) => {
+        callback(true, null);
+      });
+
+      return request(app)
+        .put("/api/v1/categories/" + id)
+        .send(update)
+        .then((response) => {
+          expect(response.statusCode).toBe(500);
+        });
+    });
+
+    it("Should return 404 if the user inserts an invalid database id", () => {
+      dbUpdate.mockImplementation((f, update, v, callback) => {
+        callback(false, true);
+      });
+
+      return request(app)
+        .put("/api/v1/categories/1234")
+        .send(update)
+        .then((response) => {
+          expect(response.statusCode).toBe(404);
+        });
+    });
+
+    it("Should return 404 if the user inserts a non-existing DB id", () => {
+      dbUpdate.mockImplementation((f, update, v, callback) => {
+        callback(false, false);
+      });
+
+      return request(app)
+        .put("/api/v1/categories/" + id)
+        .send(update)
+        .then((response) => {
+          expect(response.statusCode).toBe(404);
+        });
+    });
+  });
+
   describe("DELETE /products", () => {
     const id = "61cf2762645dc30315a132b6";
 
@@ -276,6 +465,65 @@ describe("Catalogue API", () => {
       });
       return request(app)
         .delete("/api/v1/products/" + id)
+        .then((response) => {
+          expect(response.statusCode).toBe(404);
+          expect(dbRemove).toBeCalledWith(id, expect.any(Function));
+        });
+    });
+  });
+
+  describe("DELETE /categories", () => {
+    const id = "61cf2762645dc30315a132b6";
+
+    beforeEach(() => {
+      dbRemove = jest.spyOn(Category, "findByIdAndDelete");
+    });
+
+    // 204 code
+    it("Should remove an existing category", () => {
+      dbRemove.mockImplementation((i, callback) => {
+        callback(false, true);
+      });
+
+      return request(app)
+        .delete("/api/v1/categories/" + id)
+        .then((response) => {
+          expect(response.statusCode).toBe(204);
+          expect(dbRemove).toBeCalledWith(id, expect.any(Function));
+        });
+    });
+
+    it("Should return a server error (500 code)", () => {
+      dbRemove.mockImplementation((i, callback) => {
+        callback(true, true);
+      });
+
+      return request(app)
+        .delete("/api/v1/categories/" + id)
+        .then((response) => {
+          expect(response.statusCode).toBe(500);
+          expect(dbRemove).toBeCalledWith(id, expect.any(Function));
+        });
+    });
+
+    it("Should return a client error (404 code) when inserting an invalid DB id", () => {
+      dbRemove.mockImplementation((i, callback) => {
+        callback(false, true);
+      });
+
+      return request(app)
+        .delete("/api/v1/categories/1234")
+        .then((response) => {
+          expect(response.statusCode).toBe(404);
+        });
+    });
+
+    it("Should return a client error (404 code) when inserting a non-existing DB id", () => {
+      dbRemove.mockImplementation((i, callback) => {
+        callback(false, false);
+      });
+      return request(app)
+        .delete("/api/v1/categories/" + id)
         .then((response) => {
           expect(response.statusCode).toBe(404);
           expect(dbRemove).toBeCalledWith(id, expect.any(Function));
@@ -343,6 +591,67 @@ describe("Catalogue API", () => {
 
       return request(app)
         .get("/api/v1/products/" + id)
+        .then((response) => {
+          expect(response.statusCode).toBe(404);
+        });
+    });
+  });
+
+  describe("/GET /categories/:id", () => {
+    const id = "61d1e7b48140c58e2084ba70";
+
+    const category = new Category({
+      name: "category1",
+    });
+
+    beforeEach(() => {
+      dbFindOne = jest.spyOn(Category, "findOne");
+    });
+
+    it("Should return an existing category", () => {
+      dbFindOne.mockImplementation((i, callback) => {
+        callback(false, category);
+      });
+
+      return request(app)
+        .get("/api/v1/categories/" + id)
+        .then((response) => {
+          expect(response.statusCode).toBe(200);
+          expect(dbFindOne).toBeCalledWith({ _id: id }, expect.any(Function));
+        });
+    });
+
+    it("Should return a server error (500 code)", () => {
+      dbFindOne.mockImplementation((i, callback) => {
+        callback(true, category);
+      });
+
+      return request(app)
+        .get("/api/v1/categories/" + id)
+        .then((response) => {
+          expect(response.statusCode).toBe(500);
+        });
+    });
+
+    it("Should return a client error (404 code) when inserting an invalid id", () => {
+      dbFindOne.mockImplementation((i, callback) => {
+        callback(false, category);
+      });
+
+      return request(app)
+        .get("/api/v1/categories/1234")
+        .then((response) => {
+          expect(response.statusCode).toBe(404);
+        });
+    });
+
+    it("Should return a client error (404 code) when inserting a non-existing DB id", () => {
+      dbFindOne.mockImplementation((i, callback) => {
+        callback(false, null);
+      });
+
+      return request(app)
+        .get("/api/v1/categories/" + id)
         .then((response) => {
           expect(response.statusCode).toBe(404);
         });
