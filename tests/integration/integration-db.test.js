@@ -1,4 +1,5 @@
 const Product = require("../../products.js");
+const Category = require("../../categories.js");
 const mongoose = require("mongoose");
 const dbConnect = require("../../db");
 
@@ -11,7 +12,9 @@ describe("Products DB connection", () => {
   //
   beforeEach((done) => {
     Product.deleteMany({}, (err) => {
-      done();
+      Category.deleteMany({}, (err) => {
+        done();
+      });
     });
   });
 
@@ -29,6 +32,19 @@ describe("Products DB connection", () => {
       expect(err).toBeNull();
       Product.find({}, (err, products) => {
         expect(products).toHaveLength(1);
+        done();
+      });
+    });
+  });
+
+  it("Writes a category in the DB", (done) => {
+    const category = new Category({
+      name: "name"
+    });
+    category.save((err, category) => {
+      expect(err).toBeNull();
+      Category.find({}, (err, categories) => {
+        expect(categories).toHaveLength(1);
         done();
       });
     });
