@@ -2,6 +2,7 @@ var express = require("express");
 var bodyParser = require("body-parser");
 const Product = require("./products.js");
 const Category = require("./categories.js");
+const { publishPubSubMessage } = require("/models/pubsub.js");
 
 var BASE_API_PATH = "/api/v1";
 
@@ -85,7 +86,14 @@ app.post(BASE_API_PATH + "/products", (req, res) => {
         res.sendStatus(500);
       }
     } else {
-      res.sendStatus(201);
+      // Publish a message to the topic
+      try {
+        await publishPubSubMessage("create-product", product);
+        res.sendStatus(201);
+      } catch(e) {
+        res.status(500).send(e);
+      }
+      
     }
   });
 });
@@ -125,8 +133,13 @@ app.put(BASE_API_PATH + "/products/:id", (req, res) => {
         }
       } else {
         if (doc) {
-          console.log(doc);
-          res.sendStatus(204);
+          try {
+            await publishPubSubMessage("update-product", product);
+            console.log(doc);
+            res.sendStatus(204);
+          } catch(e) {
+            res.status(500).send(e);
+          } 
         } else {
           res.status(404).send("Product not found");
         }
@@ -149,7 +162,13 @@ app.delete(BASE_API_PATH + "/products/:id", (req, res) => {
       console.log(Date() + " - " + err);
       res.sendStatus(500);
     } else if (product) {
-      res.sendStatus(204);
+      try {
+        await publishPubSubMessage("delete-product", product);
+        res.sendStatus(204);
+      } catch(e) {
+        res.status(500).send(e);
+      }
+      
     } else {
       res.status(404).send("Product not found");
     }
