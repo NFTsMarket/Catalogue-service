@@ -134,13 +134,13 @@ app.put(BASE_API_PATH + "/products/:id", async (req, res) => {
         }
       } else {
         if (doc) {
-          try {
-            await publishPubSubMessage("updated-product", product);
+          // try {
+          //   await publishPubSubMessage("updated-product", product);
             console.log(doc);
             res.sendStatus(204);
-          } catch(e) {
-            res.status(500).send(e);
-          } 
+          // } catch(e) {
+          //   res.status(500).send(e);
+          // } 
         } else {
           res.status(404).send("Product not found");
         }
