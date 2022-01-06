@@ -1,5 +1,17 @@
 const mongoose = require("mongoose");
 // Product Schema
+
+// TODO: Create a separate file
+const userSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  profilePicture: String,   // Can be null
+  id: String,
+  deleted: {
+    type: Boolean,
+    default: false,
+  }
+})
 const productSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -60,7 +72,11 @@ productSchema.methods.cleanup = function () {
   };
 };
 
+// TODO: Create cleanup
+
 // Product class (This class is a model of productSchema)
 const Product = mongoose.model("Product", productSchema);
 
-module.exports = Product;
+const User = mongoose.model("User", userSchema);
+
+module.exports = { Product, User };

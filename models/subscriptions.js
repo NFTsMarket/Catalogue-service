@@ -16,22 +16,54 @@ class Subscriptions {
     // Create my subscriptions
     initialize() {
         // Example subscription
-        createSubscription("example-topic", "example-subscription").catch(console.error);
+        // createSubscription("user-topic", "example-subscription").catch(console.error);
     }
 
     execute() {
-        // Listen for new messages in this subscription
-        // this.PubSub
-        //     .subscription("testing-topic")
-        //     .on("message", (message) => {
-        //         // Example extracting data for the message
-        //         console.log("Receiving...");
-        //         const { your_variables } = JSON.parse(message.data.toString());
+        // On Created user
+        this.PubSub
+            .subscription("catalogue-created-user")
+            .on("message", (message) => {
+                // Example extracting data for the message
+                console.log("Receiving...");
+                console.log(JSON.parse(message.data.toString()));
+                // const { your_variables } = JSON.parse(message.data.toString());
+                
+                // Specify how to use the message
 
-        //         // Specify how to use the message
+                message.ack();
+            });
 
-        //         message.ack();
-        //     });
+            // On Updated user
+            // Update all products from the user
+            this.PubSub
+            .subscription("catalogue-updated-user")
+            .on("message", (message) => {
+                // Example extracting data for the message
+                console.log("Receiving...");
+                console.log(JSON.parse(message.data.toString()));
+                // const { your_variables } = JSON.parse(message.data.toString());
+
+                // Specify how to use the message
+
+                message.ack();
+            });
+
+            // On Deleted user
+            // Update name, profile picture and email
+            this.PubSub
+            .subscription("catalogue-deleted-user")
+            .on("message", (message) => {
+                // Example extracting data for the message
+                console.log("Receiving...");
+                console.log(JSON.parse(message.data.toString()));
+                // const { your_variables } = JSON.parse(message.data.toString());
+
+                // Specify how to use the message
+
+                message.ack();
+            });
+            
     }
 
 }

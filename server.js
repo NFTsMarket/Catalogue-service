@@ -34,7 +34,8 @@ app.get(BASE_API_PATH + "/products", (req, res) => {
         })
       );
     }
-  });
+    // TODO: Consider removing if not needed
+  }).populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}]);
 });
 
 // GET PRODUCT BY ID
@@ -58,7 +59,7 @@ app.get(BASE_API_PATH + "/products/:id", (req, res) => {
     } else {
       res.status(404).send("Product not found");
     }
-  });
+  }).populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}]);
 });
 
 // CREATE A PRODUCT
@@ -88,7 +89,7 @@ app.post(BASE_API_PATH + "/products", async (req, res) => {
     } else {
       // Publish a message to the topic
       try {
-        await publishPubSubMessage("create-product", product);
+        await publishPubSubMessage("created-product", product);
         res.sendStatus(201);
       } catch(e) {
         res.status(500).send(e);
@@ -134,7 +135,7 @@ app.put(BASE_API_PATH + "/products/:id", async (req, res) => {
       } else {
         if (doc) {
           try {
-            await publishPubSubMessage("update-product", product);
+            await publishPubSubMessage("updated-product", product);
             console.log(doc);
             res.sendStatus(204);
           } catch(e) {
@@ -163,7 +164,7 @@ app.delete(BASE_API_PATH + "/products/:id", async (req, res) => {
       res.sendStatus(500);
     } else if (product) {
       try {
-        await publishPubSubMessage("delete-product", product);
+        await publishPubSubMessage("deleted-product", product);
         res.sendStatus(204);
       } catch(e) {
         res.status(500).send(e);
