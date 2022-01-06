@@ -2,7 +2,7 @@ var express = require("express");
 var bodyParser = require("body-parser");
 const Product = require("./products.js");
 const Category = require("./categories.js");
-const { publishPubSubMessage } = require("/models/pubsub.js");
+const { publishPubSubMessage } = require("./models/pubsub.js");
 
 var BASE_API_PATH = "/api/v1";
 
@@ -62,7 +62,7 @@ app.get(BASE_API_PATH + "/products/:id", (req, res) => {
 });
 
 // CREATE A PRODUCT
-app.post(BASE_API_PATH + "/products", (req, res) => {
+app.post(BASE_API_PATH + "/products", async (req, res) => {
   console.log(Date() + " - POST /products");
   var product = {
     title: req.body.title,
@@ -76,7 +76,7 @@ app.post(BASE_API_PATH + "/products", (req, res) => {
     updatedAt: Date(),
   };
 
-  Product.create(product, (err) => {
+  Product.create(product, async (err) => {
     if (err) {
       console.log(Date() + " - " + err);
 
@@ -99,7 +99,7 @@ app.post(BASE_API_PATH + "/products", (req, res) => {
 });
 
 // MODIFY A PRODUCT
-app.put(BASE_API_PATH + "/products/:id", (req, res) => {
+app.put(BASE_API_PATH + "/products/:id", async (req, res) => {
   console.log(Date() + " PUT /products");
 
   // If the id is valid simply return a 404 code
@@ -123,7 +123,7 @@ app.put(BASE_API_PATH + "/products/:id", (req, res) => {
     filter,
     update,
     { runValidators: true },
-    function (err, doc) {
+    async function (err, doc) {
       if (err) {
         console.log(Date() + " - " + err);
         if (err.errors) {
@@ -149,7 +149,7 @@ app.put(BASE_API_PATH + "/products/:id", (req, res) => {
 });
 
 // DELETE A PRODUCT
-app.delete(BASE_API_PATH + "/products/:id", (req, res) => {
+app.delete(BASE_API_PATH + "/products/:id", async (req, res) => {
   console.log(Date() + " - DELETE /products/:id");
 
   // If the id is valid simply return a 404 code
@@ -157,7 +157,7 @@ app.delete(BASE_API_PATH + "/products/:id", (req, res) => {
     return res.status(404).send("Please, insert a valid database id");
   }
 
-  Product.findByIdAndDelete(req.params.id, function (err, product) {
+  Product.findByIdAndDelete(req.params.id, async function (err, product) {
     if (err) {
       console.log(Date() + " - " + err);
       res.sendStatus(500);

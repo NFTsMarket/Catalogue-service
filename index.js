@@ -8,13 +8,12 @@ var port = process.env.PORT || 3000;
 
 console.log("Starting API server at " + port);
 
+const subscriptions = new Subscriptions();
+subscriptions.initialize();
+subscriptions.execute();
+
 dbConnect().then(
   () => {
-
-    const subscriptions = new Subscriptions();
-    subscriptions.initialize();
-    subscriptions.execute();
-
     app.listen(port);
     console.log("Server ready!");
   },

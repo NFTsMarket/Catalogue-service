@@ -21,17 +21,17 @@ class Subscriptions {
 
     execute() {
         // Listen for new messages in this subscription
-        this.PubSub
-            .subscription("testing-topic")
-            on("message", (message) => {
-                // Example extracting data for the message
-                console.log("Receiving...");
-                const { your_variables } = JSON.parse(message.data.toString());
+        // this.PubSub
+        //     .subscription("testing-topic")
+        //     .on("message", (message) => {
+        //         // Example extracting data for the message
+        //         console.log("Receiving...");
+        //         const { your_variables } = JSON.parse(message.data.toString());
 
-                // Specify how to use the message
+        //         // Specify how to use the message
 
-                message.ack();
-            });
+        //         message.ack();
+        //     });
     }
 
 }
