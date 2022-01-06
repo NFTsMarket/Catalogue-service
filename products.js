@@ -79,4 +79,4 @@ const Product = mongoose.model("Product", productSchema);
 
 const User = mongoose.model("User", userSchema);
 
-module.exports = { Product, User };
+module.exports = Product;
