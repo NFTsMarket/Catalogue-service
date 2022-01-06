@@ -88,12 +88,12 @@ app.post(BASE_API_PATH + "/products", async (req, res) => {
       }
     } else {
       // Publish a message to the topic
-      try {
-        await publishPubSubMessage("created-product", product);
-        res.sendStatus(201);
-      } catch(e) {
-        res.status(500).send(e);
-      }
+      // try {
+      //   await publishPubSubMessage("created-product", product);
+      res.sendStatus(201);
+      // } catch(e) {
+      //   res.status(500).send(e);
+      // }
       
     }
   });
@@ -163,12 +163,12 @@ app.delete(BASE_API_PATH + "/products/:id", async (req, res) => {
       console.log(Date() + " - " + err);
       res.sendStatus(500);
     } else if (product) {
-      try {
-        await publishPubSubMessage("deleted-product", product);
-        res.sendStatus(204);
-      } catch(e) {
-        res.status(500).send(e);
-      }
+      // try {
+      //   await publishPubSubMessage("deleted-product", product);
+      res.sendStatus(204);
+      // } catch(e) {
+      //   res.status(500).send(e);
+      // }
       
     } else {
       res.status(404).send("Product not found");
