@@ -6,6 +6,7 @@ const authorizedAdmin = function (req, res, next) {
     const token = req.header("Authorization");
 
     if (!token) {
+      console.log("Token is not provided");
       return res.status(401).json({
         msg: "Token is not provided",
       });
@@ -16,6 +17,7 @@ const authorizedAdmin = function (req, res, next) {
     );
 
     if (!verifyRole(payload.role, ADMIN)) {
+      console.log("Unauthorized role");
       return res.status(403).json({
         msg: "Unauthorized role",
       });
@@ -25,6 +27,7 @@ const authorizedAdmin = function (req, res, next) {
 
     next();
   } catch (e) {
+    console.log(e);
     return res.status(401).json({
       e
     });
@@ -36,6 +39,7 @@ const authorizedClient = (req, res, next) => {
     const token = req.header("Authorization");
 
     if (!token) {
+      console.log("Token is not provided");
       return res.status(401).json({
         msg: "Token is not provided",
       });
@@ -46,6 +50,7 @@ const authorizedClient = (req, res, next) => {
     );
 
     if (!verifyRole(payload.role, CLIENT)) {
+      console.log("Unauthorized role");
       return res.status(403).json({
         msg: "Unauthorized role",
       });
