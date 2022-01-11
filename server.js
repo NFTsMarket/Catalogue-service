@@ -3,6 +3,10 @@ var bodyParser = require("body-parser");
 const Product = require("./products.js");
 const Category = require("./categories.js");
 const { publishPubSubMessage } = require("./models/pubsub.js");
+const {
+  authorizedAdmin,
+  authorizedClient,
+} = require("./middlewares/authorized-roles");
 
 var BASE_API_PATH = "/api/v1";
 
@@ -20,7 +24,7 @@ app.get(BASE_API_PATH + "/healthz", (req, res) => {
 // PRODUCTS CRUD
 
 // GET PRODUCTS
-app.get(BASE_API_PATH + "/products", (req, res) => {
+app.get(BASE_API_PATH + "/products", authorizedClient, (req, res) => {
   console.log(Date() + " - GET /products");
 
   Product.find({}, (err, products) => {
@@ -39,7 +43,7 @@ app.get(BASE_API_PATH + "/products", (req, res) => {
 });
 
 // GET PRODUCT BY ID
-app.get(BASE_API_PATH + "/products/:id", (req, res) => {
+app.get(BASE_API_PATH + "/products/:id", authorizedClient, (req, res) => {
   console.log(Date() + " - GET /products/:id");
 
   // If the id is valid simply return a 404 code
@@ -63,7 +67,7 @@ app.get(BASE_API_PATH + "/products/:id", (req, res) => {
 });
 
 // CREATE A PRODUCT
-app.post(BASE_API_PATH + "/products", async (req, res) => {
+app.post(BASE_API_PATH + "/products", authorizedClient, async (req, res) => {
   console.log(Date() + " - POST /products");
   var product = {
     title: req.body.title,
@@ -100,7 +104,7 @@ app.post(BASE_API_PATH + "/products", async (req, res) => {
 });
 
 // MODIFY A PRODUCT
-app.put(BASE_API_PATH + "/products/:id", async (req, res) => {
+app.put(BASE_API_PATH + "/products/:id", authorizedClient, async (req, res) => {
   console.log(Date() + " PUT /products");
 
   // If the id is valid simply return a 404 code
@@ -150,7 +154,7 @@ app.put(BASE_API_PATH + "/products/:id", async (req, res) => {
 });
 
 // DELETE A PRODUCT
-app.delete(BASE_API_PATH + "/products/:id", async (req, res) => {
+app.delete(BASE_API_PATH + "/products/:id", authorizedClient, async (req, res) => {
   console.log(Date() + " - DELETE /products/:id");
 
   // If the id is valid simply return a 404 code
@@ -179,7 +183,7 @@ app.delete(BASE_API_PATH + "/products/:id", async (req, res) => {
 // CATEGORIES CRUD
 
 // GET CATEGORIES
-app.get(BASE_API_PATH + "/categories", (req, res) => {
+app.get(BASE_API_PATH + "/categories", authorizedClient, (req, res) => {
   console.log(Date() + " - GET /categories");
 
   Category.find({}, (err, categories) => {
@@ -197,7 +201,7 @@ app.get(BASE_API_PATH + "/categories", (req, res) => {
 });
 
 // GET CATEGORY BY ID
-app.get(BASE_API_PATH + "/categories/:id", (req, res) => {
+app.get(BASE_API_PATH + "/categories/:id", authorizedClient, (req, res) => {
   console.log(Date() + " - GET /categories/:id");
 
   // If the id is valid simply return a 404 code
@@ -220,7 +224,7 @@ app.get(BASE_API_PATH + "/categories/:id", (req, res) => {
 });
 
 // CREATE A CATEGORY
-app.post(BASE_API_PATH + "/categories", (req, res) => {
+app.post(BASE_API_PATH + "/categories", authorizedClient, (req, res) => {
   console.log(Date() + " - POST /categories");
   var category = new Category({
     name: req.body.name,
@@ -244,7 +248,7 @@ app.post(BASE_API_PATH + "/categories", (req, res) => {
 });
 
 // MODIFY A CATEGORY
-app.put(BASE_API_PATH + "/categories/:id", (req, res) => {
+app.put(BASE_API_PATH + "/categories/:id", authorizedClient, (req, res) => {
   console.log(Date() + " PUT /categories");
 
   // If the id is valid simply return a 404 code
@@ -280,7 +284,7 @@ app.put(BASE_API_PATH + "/categories/:id", (req, res) => {
 });
 
 // DELETE A CATEGORY
-app.delete(BASE_API_PATH + "/categories/:id", (req, res) => {
+app.delete(BASE_API_PATH + "/categories/:id", authorizedClient, (req, res) => {
   console.log(Date() + " - DELETE /categories/:id");
 
   // If the id is not valid simply return a 404 code
