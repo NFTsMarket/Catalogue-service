@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema({
     default: false,
   }
 })
+
 const productSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -34,10 +35,12 @@ const productSchema = new mongoose.Schema({
     min: [0, "Price cannot be negative, inserted: {VALUE}"],
     required: true,
   },
-  categories: {
-    type: String,
-    required: true,
-  },
+  categories: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "category"
+    }
+  ],
   picture: {
     type: String,
     required: true,
@@ -72,7 +75,6 @@ productSchema.methods.cleanup = function () {
   };
 };
 
-// TODO: Create cleanup
 
 // Product class (This class is a model of productSchema)
 const Product = mongoose.model("Product", productSchema);

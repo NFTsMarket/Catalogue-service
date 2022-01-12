@@ -97,9 +97,10 @@ app.post(BASE_API_PATH + "/products", async (req, res) => {
       // } catch(e) {
       //   res.status(500).send(e);
       // }
-      
     }
   });
+
+  
 });
 
 // MODIFY A PRODUCT
@@ -177,6 +178,7 @@ app.delete(BASE_API_PATH + "/products/:id", async (req, res) => {
       res.status(404).send("Product not found");
     }
   });
+
 });
 
 // CATEGORIES CRUD
@@ -185,7 +187,7 @@ app.delete(BASE_API_PATH + "/products/:id", async (req, res) => {
 app.get(BASE_API_PATH + "/categories", (req, res) => {
   console.log(Date() + " - GET /categories");
 
-  Category.find({}, (err, categories) => {
+  Category.find({deleted:false}, (err, categories) => {
     if (err) {
       console.log(Date() + " - " + err);
       res.sendStatus(500);
@@ -198,6 +200,8 @@ app.get(BASE_API_PATH + "/categories", (req, res) => {
     }
   });
 });
+
+
 
 // GET CATEGORY BY ID
 app.get(BASE_API_PATH + "/categories/:id", (req, res) => {
@@ -246,8 +250,9 @@ app.post(BASE_API_PATH + "/categories", (req, res) => {
   });
 });
 
+
 // MODIFY A CATEGORY
-app.put(BASE_API_PATH + "/categories/:id", (req, res) => {
+app.put(BASE_API_PATH + "/categories/:id", async (req, res) => {
   console.log(Date() + " PUT /categories");
 
   // If the id is valid simply return a 404 code
@@ -262,7 +267,7 @@ app.put(BASE_API_PATH + "/categories/:id", (req, res) => {
     filter,
     update,
     { runValidators: true },
-    function (err, doc) {
+    async function (err, doc) {
       if (err) {
         console.log(Date() + " - " + err);
         if (err.errors) {
@@ -283,24 +288,65 @@ app.put(BASE_API_PATH + "/categories/:id", (req, res) => {
 });
 
 // DELETE A CATEGORY
-app.delete(BASE_API_PATH + "/categories/:id", (req, res) => {
+app.delete(BASE_API_PATH + "/categories/:id", async (req, res) => {
   console.log(Date() + " - DELETE /categories/:id");
 
-  // If the id is not valid simply return a 404 code
+  // If the id is valid simply return a 404 code
   if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
-    return res.status(404).send("Category  not found");
+    return res.status(404).send("Please, insert a valid database id");
   }
 
-  Category.findByIdAndDelete(req.params.id, function (err, category) {
+  var filter = { _id: req.params.id };
+  var update = { $set: {deleted: true, updatedAt: Date() } };
+
+  Category.findOneAndUpdate(
+    filter,
+    update,
+    { runValidators: true },
+    async function (err, doc) {
+      if (err) {
+        console.log(Date() + " - " + err);
+        if (err.errors) {
+          res.status(400).send({ error: err.message });
+        } else {
+          res.sendStatus(500);
+        }
+      } else {
+        if (doc) {
+          console.log(doc);
+          res.sendStatus(204);
+        } else {
+          res.status(404).send("Category not found");
+        }
+      }
+    }
+  );
+  
+});
+
+
+// GET PRODUCT BY CATEGORY
+app.get(BASE_API_PATH + "/products-category/:id", (req, res) => {
+  console.log(Date() + " - GET /products-category/:id");
+
+  // If the id is valid simply return a 404 code
+  if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+    return res.status(404).send("Please, insert a valid database id");
+  }
+
+  Product.find({categories: req.params.id}, (err, products) => {
     if (err) {
       console.log(Date() + " - " + err);
       res.sendStatus(500);
-    } else if (category) {
-      res.sendStatus(204);
     } else {
-      res.status(404).send("Category not found");
+      res.send(
+        products.map((product) => {
+          return product.cleanup();
+        })
+      );
     }
-  });
+    // TODO: Consider removing if not needed
+  }).populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}]);
 });
 
 module.exports = app;
