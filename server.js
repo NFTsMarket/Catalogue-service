@@ -1,5 +1,6 @@
 var express = require("express");
 var bodyParser = require("body-parser");
+var cors = require('cors');
 const Product = require("./products.js");
 const Category = require("./categories.js");
 const { publishPubSubMessage } = require("./models/pubsub.js");
@@ -11,7 +12,9 @@ const {
 var BASE_API_PATH = "/api/v1";
 
 var app = express();
+app.use(cors());
 app.use(bodyParser.json());
+
 
 app.get("/", (req, res) => {
   res.send("<html><body><h1>Catalogue API</h1></body></html>");
