@@ -8,6 +8,8 @@ COPY package-lock.json .
 RUN npm install
 
 COPY models .
+COPY middlewares .
+COPY utils .
 COPY index.js .
 COPY db.js .
 COPY server.js .

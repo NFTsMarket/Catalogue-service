@@ -75,6 +75,20 @@ describe("Catalogue API", () => {
           expect(response.statusCode).toBe(500);
         });
     });
+
+    it("Should return a jwt error message", () => {
+      dbFind.mockImplementation((query, callback) => {
+        callback(null, products);
+      });
+
+      return request(app)
+        .get("/api/v1/products")
+        .then((response) => {
+          expect(response.statusCode).toBe(401);
+          expect(response.body).toHaveProperty("msg", "Token is not provided")
+        });
+    });
+
   });
 
   describe("GET /categories", () => {
@@ -117,6 +131,20 @@ describe("Catalogue API", () => {
           expect(response.statusCode).toBe(500);
         });
     });
+
+    it("Should return an authentication error", () => {
+      dbFind.mockImplementation((query, callback) => {
+        callback(null, categories);
+      });
+
+      return request(app)
+        .get("/api/v1/categories")
+        .then((response) => {
+          expect(response.statusCode).toBe(401);
+          expect(response.body).toHaveProperty("msg", "Token is not provided")
+        });
+    });
+
   });
 
   describe("POST /products", () => {
@@ -178,6 +206,21 @@ describe("Catalogue API", () => {
           expect(response.body).toHaveProperty("error", "Invalid input");
         });
     });
+
+    it("Should return an authentication error", () => {
+      dbInsert.mockImplementation((c, callback) => {
+        callback(false);
+      });
+
+      return request(app)
+        .post("/api/v1/products")
+        .send(product)
+        .then((response) => {
+          expect(response.statusCode).toBe(401);
+          expect(response.body).toHaveProperty("msg", "Token is not provided")
+        });
+    });
+
   });
 
   describe("POST /categories", () => {
@@ -234,6 +277,21 @@ describe("Catalogue API", () => {
           expect(response.body).toHaveProperty("error", "Invalid input");
         });
     });
+
+    it("Should return an authentication error", () => {
+      dbInsert.mockImplementation((c, callback) => {
+        callback(false);
+      });
+
+      return request(app)
+        .post("/api/v1/categories")
+        .send(category)
+        .then((response) => {
+          expect(response.statusCode).toBe(401);
+          expect(response.body).toHaveProperty("msg", "Token is not provided")
+        });
+    });
+
   });
 
   describe("PUT /products", () => {
@@ -334,6 +392,21 @@ describe("Catalogue API", () => {
           expect(response.statusCode).toBe(404);
         });
     });
+
+    it("Should return an authentication error", () => {
+      dbUpdate.mockImplementation((f, update, v, callback) => {
+        callback(null, true);
+      });
+
+      return request(app)
+        .put("/api/v1/products/" + id)
+        .send(update)
+        .then((response) => {
+          expect(response.statusCode).toBe(401);
+          expect(response.body).toHaveProperty("msg", "Token is not provided");
+        });
+    });
+
   });
 
   describe("PUT /categories", () => {
@@ -424,6 +497,21 @@ describe("Catalogue API", () => {
           expect(response.statusCode).toBe(404);
         });
     });
+
+    it("Should return an authentication error", () => {
+      dbUpdate.mockImplementation((f, update, v, callback) => {
+        callback(null, true);
+      });
+
+      return request(app)
+        .put("/api/v1/categories/" + id)
+        .send(update)
+        .then((response) => {
+          expect(response.statusCode).toBe(401);
+          expect(response.body).toHaveProperty("msg", "Token is not provided");
+        });
+    });
+
   });
 
   describe("DELETE /products", () => {
@@ -483,6 +571,20 @@ describe("Catalogue API", () => {
           expect(dbRemove).toBeCalledWith(id, expect.any(Function));
         });
     });
+
+    it("Should return an authentication error", () => {
+      dbRemove.mockImplementation((i, callback) => {
+        callback(false, true);
+      });
+
+      return request(app)
+        .delete("/api/v1/products/" + id)
+        .then((response) => {
+          expect(response.statusCode).toBe(401);
+          expect(response.body).toHaveProperty("msg", "Token is not provided");
+        });
+    });
+
   });
 
   describe("DELETE /categories", () => {
@@ -542,6 +644,20 @@ describe("Catalogue API", () => {
           expect(dbRemove).toBeCalledWith(id, expect.any(Function));
         });
     });
+
+    it("Should return an authentication error", () => {
+      dbRemove.mockImplementation((i, callback) => {
+        callback(false, true);
+      });
+
+      return request(app)
+        .delete("/api/v1/categories/" + id)
+        .then((response) => {
+          expect(response.statusCode).toBe(401);
+          expect(response.body).toHaveProperty("msg", "Token is not provided");
+        });
+    });
+
   });
 
   describe("/GET /products/:id", () => {
@@ -608,6 +724,20 @@ describe("Catalogue API", () => {
           expect(response.statusCode).toBe(404);
         });
     });
+
+    it("Should return an authentication error", () => {
+      dbFindOne.mockImplementation((i, callback) => {
+        callback(false, product);
+      });
+
+      return request(app)
+        .get("/api/v1/products/" + id)
+        .then((response) => {
+          expect(response.statusCode).toBe(401);
+          expect(response.body).toHaveProperty("msg", "Token is not provided")
+        });
+    });
+
   });
 
   describe("/GET /categories/:id", () => {
@@ -669,5 +799,19 @@ describe("Catalogue API", () => {
           expect(response.statusCode).toBe(404);
         });
     });
+
+    it("Should return an authentication error", () => {
+      dbFindOne.mockImplementation((i, callback) => {
+        callback(false, category);
+      });
+
+      return request(app)
+        .get("/api/v1/categories/" + id)
+        .then((response) => {
+          expect(response.statusCode).toBe(401);
+          expect(response.body).toHaveProperty("msg", "Token is not provided")
+        });
+    });
+
   });
 });
