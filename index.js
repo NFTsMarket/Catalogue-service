@@ -4,7 +4,7 @@ const Subscriptions = require("./models/subscriptions");
 
 require("dotenv").config();
 
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 4000;
 
 console.log("Starting API server at " + port);
 
