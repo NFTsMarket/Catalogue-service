@@ -89,7 +89,7 @@ describe("Catalogue API", () => {
         .then((response) => {
           expect(response.statusCode).toBe(200);
           expect(response.body).toHaveLength(1);
-          expect(dbFind).toBeCalledWith({}, expect.any(Function));
+          expect(dbFind).toBeCalledWith({deleted:false}, expect.any(Function));
         });
     });
 
@@ -474,59 +474,90 @@ describe("Catalogue API", () => {
 
   describe("DELETE /categories", () => {
     const id = "61cf2762645dc30315a132b6";
+    let dbUpdate;
+    const update = {
+      deleted: true,
+    };
 
     beforeEach(() => {
-      dbRemove = jest.spyOn(Category, "findByIdAndDelete");
+      dbUpdate = jest.spyOn(Category, "findOneAndUpdate");
     });
 
     // 204 code
     it("Should remove an existing category", () => {
-      dbRemove.mockImplementation((i, callback) => {
-        callback(false, true);
+      dbUpdate.mockImplementation((f, update, v, callback) => {
+        callback(null, true);
       });
 
       return request(app)
         .delete("/api/v1/categories/" + id)
+        .send(update)
         .then((response) => {
           expect(response.statusCode).toBe(204);
-          expect(dbRemove).toBeCalledWith(id, expect.any(Function));
+          expect(dbUpdate).toBeCalledWith(
+            { _id: id },
+            expect.objectContaining({
+              $set: {
+                deleted: update.deleted,
+                updatedAt: expect.any(String),
+              },
+            }),
+            { runValidators: true },
+            expect.any(Function)
+          );
         });
     });
 
-    it("Should return a server error (500 code)", () => {
-      dbRemove.mockImplementation((i, callback) => {
-        callback(true, true);
+    it("Should return a client error (400 code)", () => {
+      dbUpdate.mockImplementation((f, update, v, callback) => {
+        callback({ errors: true, message: "Invalid input" }, null);
       });
 
       return request(app)
-        .delete("/api/v1/categories/" + id)
+        .put("/api/v1/categories/" + id)
+        .send(update)
         .then((response) => {
-          expect(response.statusCode).toBe(500);
-          expect(dbRemove).toBeCalledWith(id, expect.any(Function));
+          expect(response.statusCode).toBe(400);
+          expect(response.body).toHaveProperty("error", "Invalid input");
         });
     });
 
-    it("Should return a client error (404 code) when inserting an invalid DB id", () => {
-      dbRemove.mockImplementation((i, callback) => {
+    it("Should return 500 if there is a problem with the DB", () => {
+      dbUpdate.mockImplementation((f, update, v, callback) => {
+        callback(true, null);
+      });
+
+      return request(app)
+        .put("/api/v1/categories/" + id)
+        .send(update)
+        .then((response) => {
+          expect(response.statusCode).toBe(500);
+        });
+    });
+
+    it("Should return 404 if the user inserts an invalid database id", () => {
+      dbUpdate.mockImplementation((f, update, v, callback) => {
         callback(false, true);
       });
 
       return request(app)
-        .delete("/api/v1/categories/1234")
+        .put("/api/v1/categories/1234")
+        .send(update)
         .then((response) => {
           expect(response.statusCode).toBe(404);
         });
     });
 
-    it("Should return a client error (404 code) when inserting a non-existing DB id", () => {
-      dbRemove.mockImplementation((i, callback) => {
+    it("Should return 404 if the user inserts a non-existing DB id", () => {
+      dbUpdate.mockImplementation((f, update, v, callback) => {
         callback(false, false);
       });
+
       return request(app)
-        .delete("/api/v1/categories/" + id)
+        .put("/api/v1/categories/" + id)
+        .send(update)
         .then((response) => {
           expect(response.statusCode).toBe(404);
-          expect(dbRemove).toBeCalledWith(id, expect.any(Function));
         });
     });
   });
