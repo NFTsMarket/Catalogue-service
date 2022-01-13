@@ -18,13 +18,14 @@ describe("Catalogue API", () => {
   });
 
   describe("GET /products", () => {
+    const category = new Category({name:"categoria1"});
     const products = [
       new Product({
         title: "second product",
         creator: "creator2",
         description: "Description of my second product",
         price: 20.0,
-        categories: "category2",
+        categories: category,
         picture: "www.url2.com",
       }),
     ];
@@ -107,12 +108,13 @@ describe("Catalogue API", () => {
   });
 
   describe("POST /products", () => {
+    const category = new Category({name:"categoria1"});
     const product = {
       title: "myProduct",
       creator: "creator",
       description: "Description of my product",
       price: 150.5,
-      categories: "category0",
+      categories: category,
       picture: "www.myurl.com",
     };
     let dbInsert;
@@ -226,12 +228,13 @@ describe("Catalogue API", () => {
   describe("PUT /products", () => {
     const id = "61cf2762645dc30315a132b6";
     let dbUpdate;
+    const category = new Category({name:"categoria1"});
     const update = {
       title: "new title",
       owner: "new owner",
       description: "new description",
       price: 12.0,
-      categories: "new categories",
+      categories: category,
       picture: "www.newPicture.com",
     };
 
@@ -565,12 +568,13 @@ describe("Catalogue API", () => {
   describe("/GET /products/:id", () => {
     const id = "61cf2762645dc30315a132b6";
 
+    const category = new Category({name:"categoria1"});
     const product = new Product({
       title: "my product",
       creator: "creator1",
       description: "Description of my product",
       price: 20.0,
-      categories: "category",
+      categories: category,
       picture: "www.url.com",
     });
 
