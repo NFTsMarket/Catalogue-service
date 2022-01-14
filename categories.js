@@ -6,6 +6,10 @@ const categorySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  deleted: {
+    type: Boolean,
+    default: false,
+  },
   createdAt: String,
   updatedAt: String,
 });
@@ -19,6 +23,7 @@ categorySchema.methods.cleanup = function () {
     name: this.name,
     createdAt: this.createdAt,
     updatedAt: this.updatedAt,
+    deleted: this.deleted,
   };
 };
 

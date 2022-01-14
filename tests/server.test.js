@@ -27,13 +27,14 @@ describe("Catalogue API", () => {
   });
 
   describe("GET /products", () => {
+    const categories = ["61d1e7b48140c58e2084ba70"];
     const products = [
       new Product({
         title: "second product",
         creator: "creator2",
         description: "Description of my second product",
         price: 20.0,
-        categories: "category2",
+        categories: categories,
         picture: "www.url2.com",
       }),
     ];
@@ -116,7 +117,7 @@ describe("Catalogue API", () => {
         .then((response) => {
           expect(response.statusCode).toBe(200);
           expect(response.body).toHaveLength(1);
-          expect(dbFind).toBeCalledWith({}, expect.any(Function));
+          expect(dbFind).toBeCalledWith({deleted:false}, expect.any(Function));
         });
     });
 
@@ -148,12 +149,13 @@ describe("Catalogue API", () => {
   });
 
   describe("POST /products", () => {
+    const categories = ["61d1e7b48140c58e2084ba70"];
     const product = {
       title: "myProduct",
       creator: "creator",
       description: "Description of my product",
       price: 150.5,
-      categories: "category0",
+      categories: categories,
       picture: "www.myurl.com",
     };
     let dbInsert;
@@ -297,12 +299,13 @@ describe("Catalogue API", () => {
   describe("PUT /products", () => {
     const id = "61cf2762645dc30315a132b6";
     let dbUpdate;
+    const categories = ["61d1e7b48140c58e2084ba70"];
     const update = {
       title: "new title",
       owner: "new owner",
       description: "new description",
       price: 12.0,
-      categories: "new categories",
+      categories: categories,
       picture: "www.newPicture.com",
     };
 
@@ -589,69 +592,87 @@ describe("Catalogue API", () => {
 
   describe("DELETE /categories", () => {
     const id = "61cf2762645dc30315a132b6";
+    let dbUpdate;
+    const update = {
+      deleted: true,
+    };
 
     beforeEach(() => {
-      dbRemove = jest.spyOn(Category, "findByIdAndDelete");
+      dbUpdate = jest.spyOn(Category, "findOneAndUpdate");
     });
 
     // 204 code
     it("Should remove an existing category", () => {
-      dbRemove.mockImplementation((i, callback) => {
-        callback(false, true);
+      dbUpdate.mockImplementation((f, update, v, callback) => {
+        callback(null, true);
       });
 
       return request(app)
         .delete("/api/v1/categories/" + id).set("Authorization", "Bearer " + token)
+        .send(update)
         .then((response) => {
           expect(response.statusCode).toBe(204);
-          expect(dbRemove).toBeCalledWith(id, expect.any(Function));
+          expect(dbUpdate).toBeCalledWith(
+            { _id: id },
+            expect.objectContaining({
+              $set: {
+                deleted: update.deleted,
+                updatedAt: expect.any(String),
+              },
+            }),
+            { runValidators: true },
+            expect.any(Function)
+          );
         });
     });
 
-    it("Should return a server error (500 code)", () => {
-      dbRemove.mockImplementation((i, callback) => {
-        callback(true, true);
+    it("Should return 500 if there is a problem with the DB", () => {
+      dbUpdate.mockImplementation((f, update, v, callback) => {
+        callback(true, null);
       });
 
       return request(app)
-        .delete("/api/v1/categories/" + id).set("Authorization", "Bearer " + token)
+        .put("/api/v1/categories/" + id).set("Authorization", "Bearer " + token)
+        .send(update)
         .then((response) => {
           expect(response.statusCode).toBe(500);
-          expect(dbRemove).toBeCalledWith(id, expect.any(Function));
         });
     });
 
-    it("Should return a client error (404 code) when inserting an invalid DB id", () => {
-      dbRemove.mockImplementation((i, callback) => {
+    it("Should return 404 if the user inserts an invalid database id", () => {
+      dbUpdate.mockImplementation((f, update, v, callback) => {
         callback(false, true);
       });
 
       return request(app)
         .delete("/api/v1/categories/1234").set("Authorization", "Bearer " + token)
+        .send(update)
         .then((response) => {
           expect(response.statusCode).toBe(404);
         });
     });
 
-    it("Should return a client error (404 code) when inserting a non-existing DB id", () => {
-      dbRemove.mockImplementation((i, callback) => {
+    it("Should return 404 if the user inserts a non-existing DB id", () => {
+      dbUpdate.mockImplementation((f, update, v, callback) => {
         callback(false, false);
       });
+
       return request(app)
         .delete("/api/v1/categories/" + id).set("Authorization", "Bearer " + token)
+        .send(update)
         .then((response) => {
           expect(response.statusCode).toBe(404);
-          expect(dbRemove).toBeCalledWith(id, expect.any(Function));
         });
     });
 
     it("Should return an authentication error", () => {
-      dbRemove.mockImplementation((i, callback) => {
-        callback(false, true);
+      dbUpdate.mockImplementation((f, update, v, callback) => {
+        callback(null, true);
       });
 
       return request(app)
         .delete("/api/v1/categories/" + id)
+        .send(update)
         .then((response) => {
           expect(response.statusCode).toBe(401);
           expect(response.body).toHaveProperty("msg", "Token is not provided");
@@ -663,12 +684,13 @@ describe("Catalogue API", () => {
   describe("/GET /products/:id", () => {
     const id = "61cf2762645dc30315a132b6";
 
+    const category = new Category({name:"categoria1"});
     const product = new Product({
       title: "my product",
       creator: "creator1",
       description: "Description of my product",
       price: 20.0,
-      categories: "category",
+      categories: category,
       picture: "www.url.com",
     });
 

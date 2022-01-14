@@ -19,13 +19,15 @@ describe("Products DB connection", () => {
   });
 
   it("Writes a product in the DB", (done) => {
+
+    const categories = ["61d1e7b48140c58e2084ba70"];
     const product = new Product({
       title: "second product",
       creator: "creator2",
       owner: "creator2",
       description: "Description of my second product",
       price: 20.0,
-      categories: "category2",
+      categories: categories,
       picture: "www.url2.com",
     });
     product.save((err, product) => {
