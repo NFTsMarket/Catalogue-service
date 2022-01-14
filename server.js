@@ -37,8 +37,14 @@ app.get(BASE_API_PATH + "/products", (req, res) => {
         })
       );
     }
-    // TODO: Consider removing if not needed
-  }).populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}]);
+  }).populate(({
+    path: 'categories',
+    match: {
+      deleted: { $ne: true }
+    },
+}))
+  // TODO: Consider removing if not needed
+  .populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}]);
 });
 
 // GET PRODUCT BY ID
@@ -345,8 +351,15 @@ app.get(BASE_API_PATH + "/products-category/:id", (req, res) => {
         })
       );
     }
-    // TODO: Consider removing if not needed
-  }).populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}]);
+    
+  }).populate(({
+    path: 'categories',
+    match: {
+      deleted: { $ne: true }
+    },
+}))
+  // TODO: Consider removing if not needed
+  .populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}]);
 });
 
 module.exports = app;
