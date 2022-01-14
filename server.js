@@ -37,7 +37,6 @@ app.get(BASE_API_PATH + "/products", (req, res) => {
         })
       );
     }
-    // TODO: Consider removing if not needed
   }).populate(({
     path: 'categories',
     match: {
