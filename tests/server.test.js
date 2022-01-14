@@ -57,7 +57,7 @@ describe("Catalogue API", () => {
       console.log(token);
 
       return request(app)
-        .get("/api/v1/products").set("Authorization", "Bearer " + token)
+        .get("/api/v1/products")
         .then((response) => {
           expect(response.statusCode).toBe(200);
           expect(response.body).toHaveLength(1);
@@ -71,22 +71,9 @@ describe("Catalogue API", () => {
       });
 
       return request(app)
-        .get("/api/v1/products").set("Authorization", "Bearer " + token)
-        .then((response) => {
-          expect(response.statusCode).toBe(500);
-        });
-    });
-
-    it("Should return a jwt error message", () => {
-      dbFind.mockImplementation((query, callback) => {
-        callback(null, products);
-      });
-
-      return request(app)
         .get("/api/v1/products")
         .then((response) => {
-          expect(response.statusCode).toBe(401);
-          expect(response.body).toHaveProperty("msg", "Token is not provided")
+          expect(response.statusCode).toBe(500);
         });
     });
 
@@ -113,7 +100,7 @@ describe("Catalogue API", () => {
       });
 
       return request(app)
-        .get("/api/v1/categories").set("Authorization", "Bearer " + token)
+        .get("/api/v1/categories")
         .then((response) => {
           expect(response.statusCode).toBe(200);
           expect(response.body).toHaveLength(1);
@@ -127,22 +114,9 @@ describe("Catalogue API", () => {
       });
 
       return request(app)
-        .get("/api/v1/categories").set("Authorization", "Bearer " + token)
-        .then((response) => {
-          expect(response.statusCode).toBe(500);
-        });
-    });
-
-    it("Should return an authentication error", () => {
-      dbFind.mockImplementation((query, callback) => {
-        callback(null, categories);
-      });
-
-      return request(app)
         .get("/api/v1/categories")
         .then((response) => {
-          expect(response.statusCode).toBe(401);
-          expect(response.body).toHaveProperty("msg", "Token is not provided")
+          expect(response.statusCode).toBe(500);
         });
     });
 
@@ -704,7 +678,7 @@ describe("Catalogue API", () => {
       });
 
       return request(app)
-        .get("/api/v1/products/" + id).set("Authorization", "Bearer " + token)
+        .get("/api/v1/products/" + id)
         .then((response) => {
           expect(response.statusCode).toBe(200);
           expect(dbFindOne).toBeCalledWith({ _id: id }, expect.any(Function));
@@ -717,7 +691,7 @@ describe("Catalogue API", () => {
       });
 
       return request(app)
-        .get("/api/v1/products/" + id).set("Authorization", "Bearer " + token)
+        .get("/api/v1/products/" + id)
         .then((response) => {
           expect(response.statusCode).toBe(500);
         });
@@ -729,7 +703,7 @@ describe("Catalogue API", () => {
       });
 
       return request(app)
-        .get("/api/v1/products/1234").set("Authorization", "Bearer " + token)
+        .get("/api/v1/products/1234")
         .then((response) => {
           expect(response.statusCode).toBe(404);
         });
@@ -741,22 +715,9 @@ describe("Catalogue API", () => {
       });
 
       return request(app)
-        .get("/api/v1/products/" + id).set("Authorization", "Bearer " + token)
-        .then((response) => {
-          expect(response.statusCode).toBe(404);
-        });
-    });
-
-    it("Should return an authentication error", () => {
-      dbFindOne.mockImplementation((i, callback) => {
-        callback(false, product);
-      });
-
-      return request(app)
         .get("/api/v1/products/" + id)
         .then((response) => {
-          expect(response.statusCode).toBe(401);
-          expect(response.body).toHaveProperty("msg", "Token is not provided")
+          expect(response.statusCode).toBe(404);
         });
     });
 
@@ -779,7 +740,7 @@ describe("Catalogue API", () => {
       });
 
       return request(app)
-        .get("/api/v1/categories/" + id).set("Authorization", "Bearer " + token)
+        .get("/api/v1/categories/" + id)
         .then((response) => {
           expect(response.statusCode).toBe(200);
           expect(dbFindOne).toBeCalledWith({ _id: id }, expect.any(Function));
@@ -792,7 +753,7 @@ describe("Catalogue API", () => {
       });
 
       return request(app)
-        .get("/api/v1/categories/" + id).set("Authorization", "Bearer " + token)
+        .get("/api/v1/categories/" + id)
         .then((response) => {
           expect(response.statusCode).toBe(500);
         });
@@ -804,7 +765,7 @@ describe("Catalogue API", () => {
       });
 
       return request(app)
-        .get("/api/v1/categories/1234").set("Authorization", "Bearer " + token)
+        .get("/api/v1/categories/1234")
         .then((response) => {
           expect(response.statusCode).toBe(404);
         });
@@ -816,22 +777,9 @@ describe("Catalogue API", () => {
       });
 
       return request(app)
-        .get("/api/v1/categories/" + id).set("Authorization", "Bearer " + token)
-        .then((response) => {
-          expect(response.statusCode).toBe(404);
-        });
-    });
-
-    it("Should return an authentication error", () => {
-      dbFindOne.mockImplementation((i, callback) => {
-        callback(false, category);
-      });
-
-      return request(app)
         .get("/api/v1/categories/" + id)
         .then((response) => {
-          expect(response.statusCode).toBe(401);
-          expect(response.body).toHaveProperty("msg", "Token is not provided")
+          expect(response.statusCode).toBe(404);
         });
     });
 
