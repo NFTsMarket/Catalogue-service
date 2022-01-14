@@ -27,7 +27,7 @@ app.get(BASE_API_PATH + "/healthz", (req, res) => {
 // PRODUCTS CRUD
 
 // GET PRODUCTS
-app.get(BASE_API_PATH + "/products", authorizedClient, (req, res) => {
+app.get(BASE_API_PATH + "/products", (req, res) => {
   console.log(Date() + " - GET /products");
 
   Product.find({}, (err, products) => {
@@ -52,7 +52,7 @@ app.get(BASE_API_PATH + "/products", authorizedClient, (req, res) => {
 });
 
 // GET PRODUCT BY ID
-app.get(BASE_API_PATH + "/products/:id", authorizedClient, (req, res) => {
+app.get(BASE_API_PATH + "/products/:id", (req, res) => {
   console.log(Date() + " - GET /products/:id");
 
   // If the id is valid simply return a 404 code
@@ -194,7 +194,7 @@ app.delete(BASE_API_PATH + "/products/:id", authorizedClient, async (req, res) =
 // CATEGORIES CRUD
 
 // GET CATEGORIES
-app.get(BASE_API_PATH + "/categories", authorizedClient, (req, res) => {
+app.get(BASE_API_PATH + "/categories", (req, res) => {
   console.log(Date() + " - GET /categories");
 
   Category.find({deleted:false}, (err, categories) => {
@@ -214,7 +214,7 @@ app.get(BASE_API_PATH + "/categories", authorizedClient, (req, res) => {
 
 
 // GET CATEGORY BY ID
-app.get(BASE_API_PATH + "/categories/:id", authorizedClient, (req, res) => {
+app.get(BASE_API_PATH + "/categories/:id", (req, res) => {
   console.log(Date() + " - GET /categories/:id");
 
   // If the id is valid simply return a 404 code
