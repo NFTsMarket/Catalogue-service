@@ -108,12 +108,12 @@ app.post(BASE_API_PATH + "/products", authorizedClient, async (req, res) => {
       }
     } else {
       // Publish a message to the topic
-      // try {
-      //   await publishPubSubMessage("created-product", product);
+      try {
+        await publishPubSubMessage("created-product", product);
       res.sendStatus(201);
-      // } catch(e) {
-      //   res.status(500).send(e);
-      // }
+      } catch(e) {
+        res.status(500).send(e);
+      }
     }
   });
 
