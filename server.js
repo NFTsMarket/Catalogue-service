@@ -27,7 +27,7 @@ app.get(BASE_API_PATH + "/healthz", (req, res) => {
 // PRODUCTS CRUD
 
 // GET PRODUCTS
-app.get(BASE_API_PATH + "/products", authorizedClient, (req, res) => {
+app.get(BASE_API_PATH + "/products", (req, res) => {
   console.log(Date() + " - GET /products");
 
   Product.find({}, (err, products) => {
@@ -41,12 +41,18 @@ app.get(BASE_API_PATH + "/products", authorizedClient, (req, res) => {
         })
       );
     }
-    // TODO: Consider removing if not needed
-  }).populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}]);
+  }).populate(({
+    path: 'categories',
+    match: {
+      deleted: { $ne: true }
+    },
+}))
+  // TODO: Consider removing if not needed
+  .populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}]);
 });
 
 // GET PRODUCT BY ID
-app.get(BASE_API_PATH + "/products/:id", authorizedClient, (req, res) => {
+app.get(BASE_API_PATH + "/products/:id", (req, res) => {
   console.log(Date() + " - GET /products/:id");
 
   // If the id is valid simply return a 404 code
@@ -101,9 +107,10 @@ app.post(BASE_API_PATH + "/products", authorizedClient, async (req, res) => {
       // } catch(e) {
       //   res.status(500).send(e);
       // }
-      
     }
   });
+
+  
 });
 
 // MODIFY A PRODUCT
@@ -181,15 +188,16 @@ app.delete(BASE_API_PATH + "/products/:id", authorizedClient, async (req, res) =
       res.status(404).send("Product not found");
     }
   });
+
 });
 
 // CATEGORIES CRUD
 
 // GET CATEGORIES
-app.get(BASE_API_PATH + "/categories", authorizedClient, (req, res) => {
+app.get(BASE_API_PATH + "/categories", (req, res) => {
   console.log(Date() + " - GET /categories");
 
-  Category.find({}, (err, categories) => {
+  Category.find({deleted:false}, (err, categories) => {
     if (err) {
       console.log(Date() + " - " + err);
       res.sendStatus(500);
@@ -203,8 +211,10 @@ app.get(BASE_API_PATH + "/categories", authorizedClient, (req, res) => {
   });
 });
 
+
+
 // GET CATEGORY BY ID
-app.get(BASE_API_PATH + "/categories/:id", authorizedClient, (req, res) => {
+app.get(BASE_API_PATH + "/categories/:id", (req, res) => {
   console.log(Date() + " - GET /categories/:id");
 
   // If the id is valid simply return a 404 code
@@ -250,8 +260,9 @@ app.post(BASE_API_PATH + "/categories", authorizedClient, (req, res) => {
   });
 });
 
+
 // MODIFY A CATEGORY
-app.put(BASE_API_PATH + "/categories/:id", authorizedClient, (req, res) => {
+app.put(BASE_API_PATH + "/categories/:id", authorizedClient, async (req, res) => {
   console.log(Date() + " PUT /categories");
 
   // If the id is valid simply return a 404 code
@@ -266,7 +277,7 @@ app.put(BASE_API_PATH + "/categories/:id", authorizedClient, (req, res) => {
     filter,
     update,
     { runValidators: true },
-    function (err, doc) {
+    async function (err, doc) {
       if (err) {
         console.log(Date() + " - " + err);
         if (err.errors) {
@@ -287,24 +298,72 @@ app.put(BASE_API_PATH + "/categories/:id", authorizedClient, (req, res) => {
 });
 
 // DELETE A CATEGORY
-app.delete(BASE_API_PATH + "/categories/:id", authorizedClient, (req, res) => {
+app.delete(BASE_API_PATH + "/categories/:id", authorizedClient, async (req, res) => {
   console.log(Date() + " - DELETE /categories/:id");
 
-  // If the id is not valid simply return a 404 code
+  // If the id is valid simply return a 404 code
   if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
-    return res.status(404).send("Category  not found");
+    return res.status(404).send("Please, insert a valid database id");
   }
 
-  Category.findByIdAndDelete(req.params.id, function (err, category) {
+  var filter = { _id: req.params.id };
+  var update = { $set: {deleted: true, updatedAt: Date() } };
+
+  Category.findOneAndUpdate(
+    filter,
+    update,
+    { runValidators: true },
+    async function (err, doc) {
+      if (err) {
+        console.log(Date() + " - " + err);
+        if (err.errors) {
+          res.status(400).send({ error: err.message });
+        } else {
+          res.sendStatus(500);
+        }
+      } else {
+        if (doc) {
+          console.log(doc);
+          res.sendStatus(204);
+        } else {
+          res.status(404).send("Category not found");
+        }
+      }
+    }
+  );
+  
+});
+
+
+// GET PRODUCT BY CATEGORY
+app.get(BASE_API_PATH + "/products-category/:id", (req, res) => {
+  console.log(Date() + " - GET /products-category/:id");
+
+  // If the id is valid simply return a 404 code
+  if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+    return res.status(404).send("Please, insert a valid database id");
+  }
+
+  Product.find({categories: req.params.id}, (err, products) => {
     if (err) {
       console.log(Date() + " - " + err);
       res.sendStatus(500);
-    } else if (category) {
-      res.sendStatus(204);
     } else {
-      res.status(404).send("Category not found");
+      res.send(
+        products.map((product) => {
+          return product.cleanup();
+        })
+      );
     }
-  });
+    
+  }).populate(({
+    path: 'categories',
+    match: {
+      deleted: { $ne: true }
+    },
+}))
+  // TODO: Consider removing if not needed
+  .populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}]);
 });
 
 module.exports = app;
