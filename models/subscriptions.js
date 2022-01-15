@@ -17,10 +17,21 @@ class Subscriptions {
     // Create my subscriptions
     initialize() {
         // Example subscription
-        // createSubscription("user-topic", "example-subscription").catch(console.error);
+        // createSubscription("updated-purchase", "catalogue").catch(console.error);
     }
 
     execute() {
+        this.PubSub.subscription("catalogue-updated-purchase").on("message", (message)=> {
+            console.log("Receiving...");
+            const purchase = JSON.parse(message.data.toString());
+            console.log(purchase);
+            // TODO: Update product
+
+            // Pub updated product
+
+            message.ack();
+        })
+
         // On Created user
         this.PubSub
             .subscription("catalogue-created-user")
