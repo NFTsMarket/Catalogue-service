@@ -60,7 +60,10 @@ class Subscriptions {
             const { id } = JSON.parse(message.data.toString());
             var filter = { id };
 
-            Asset.findOneAndDelete(filter, { deleted: true})
+            Asset.findOneAndUpdate(filter, { deleted: true})
+
+            // Delete product with Asset
+            Product.findOneAndDelete({ picture: id})
 
             message.ack();
         })
