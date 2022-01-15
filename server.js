@@ -90,7 +90,7 @@ app.post(BASE_API_PATH + "/products", authorizedClient, async (req, res) => {
     updatedAt: Date(),
   };
 
-  Product.create(product, async (err) => {
+  Product.create(product, async (err, doc) => {
     if (err) {
       console.log(Date() + " - " + err);
 
@@ -102,8 +102,9 @@ app.post(BASE_API_PATH + "/products", authorizedClient, async (req, res) => {
     } else {
       // Publish a message to the topic
       try {
-        await publishPubSubMessage("created-product", product);
-      res.sendStatus(201);
+        console.log(doc)
+        await publishPubSubMessage("created-product", doc.cleanup());
+        res.sendStatus(201);
       } catch(e) {
         res.status(500).send(e);
       }
@@ -148,13 +149,13 @@ app.put(BASE_API_PATH + "/products/:id", authorizedClient, async (req, res) => {
         }
       } else {
         if (doc) {
-          // try {
-          //   await publishPubSubMessage("updated-product", product);
+          try {
+            await publishPubSubMessage("updated-product", doc.cleanup());
             console.log(doc);
             res.sendStatus(204);
-          // } catch(e) {
-          //   res.status(500).send(e);
-          // } 
+          } catch(e) {
+            res.status(500).send(e);
+          } 
         } else {
           res.status(404).send("Product not found");
         }
@@ -177,12 +178,13 @@ app.delete(BASE_API_PATH + "/products/:id", authorizedClient, async (req, res) =
       console.log(Date() + " - " + err);
       res.sendStatus(500);
     } else if (product) {
-      // try {
-      //   await publishPubSubMessage("deleted-product", product);
-      res.sendStatus(204);
-      // } catch(e) {
-      //   res.status(500).send(e);
-      // }
+      try {
+        const id = product._id;
+        await publishPubSubMessage("deleted-product", { id });
+        res.sendStatus(204);
+      } catch(e) {
+        res.status(500).send(e);
+      }
       
     } else {
       res.status(404).send("Product not found");
