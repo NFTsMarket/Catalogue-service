@@ -72,7 +72,14 @@ app.get(BASE_API_PATH + "/products/:id", (req, res) => {
     } else {
       res.status(404).send("Product not found");
     }
-  }).populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}]);
+  }).populate(({
+    path: 'categories',
+    match: {
+      deleted: { $ne: true }
+    },
+}))
+  // TODO: Consider removing if not needed
+  .populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}]);
 });
 
 // CREATE A PRODUCT
