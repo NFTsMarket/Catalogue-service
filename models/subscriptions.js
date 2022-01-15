@@ -1,6 +1,7 @@
 const { PubSub } = require('@google-cloud/pubsub');
 const { on } = require('nedb');
 const { createSubscription } = require('./pubsub');
+const User = require('../database/users')
 
 class Subscriptions {
     constructor() {
@@ -26,10 +27,10 @@ class Subscriptions {
             .on("message", (message) => {
                 // Example extracting data for the message
                 console.log("Receiving...");
-                console.log(JSON.parse(message.data.toString()));
-                // const { your_variables } = JSON.parse(message.data.toString());
-                
-                // Specify how to use the message
+                const user = JSON.parse(message.data.toString());
+                console.log(user);
+                User.create(user, async (err) => {});
+
 
                 message.ack();
             });
@@ -41,11 +42,17 @@ class Subscriptions {
             .on("message", (message) => {
                 // Example extracting data for the message
                 console.log("Receiving...");
-                console.log(JSON.parse(message.data.toString()));
-                // const { your_variables } = JSON.parse(message.data.toString());
+                // Where: only id; data: Information
+                const { data, where } = JSON.parse(message.data.toString());
+                var filter = { id: where.id };
 
-                // Specify how to use the message
+                User.findOneAndUpdate(
+                    filter,
+                    data
+                )
 
+                console.log(where);
+                console.log(data);
                 message.ack();
             });
 
@@ -57,9 +64,16 @@ class Subscriptions {
                 // Example extracting data for the message
                 console.log("Receiving...");
                 console.log(JSON.parse(message.data.toString()));
-                // const { your_variables } = JSON.parse(message.data.toString());
+                
+                const { id } = JSON.parse(message.data.toString());
+                var filter = { id };
 
-                // Specify how to use the message
+                User.findOneAndUpdate(
+                    filter,
+                    {deleted: true}
+                )
+
+                console.log(data);
 
                 message.ack();
             });
