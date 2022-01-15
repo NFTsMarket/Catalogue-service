@@ -5,6 +5,13 @@ const request = require("supertest");
 const { response } = require("../server.js");
 const jwt = require("jsonwebtoken");
 
+jest.mock("../models/pubsub", () => {
+  return {
+    __esModule: true,
+    publishPubSubMessage: jest.fn(),
+  };
+});
+
 describe("Catalogue API", () => {
 
   let token;
