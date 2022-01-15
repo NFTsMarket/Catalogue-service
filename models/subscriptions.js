@@ -17,17 +17,50 @@ class Subscriptions {
     // Create my subscriptions
     initialize() {
         // Example subscription
-        // createSubscription("updated-purchase", "catalogue").catch(console.error);
+        // createSubscription("created-asset", "catalogue").catch(console.error);
+        // createSubscription("updated-asset", "catalogue").catch(console.error);
+        // createSubscription("deleted-asset", "catalogue").catch(console.error);
     }
 
     execute() {
-        this.PubSub.subscription("catalogue-updated-purchase").on("message", (message)=> {
+
+        // On create asset
+        this.PubSub.subscription("catalogue-created-asset").on("message", (message)=> {
+            console.log("Receiving...");
+            const asset = JSON.parse(message.data.toString());
+            console.log(asset);
+
+            message.ack();
+        })
+
+        // On update asset
+        this.PubSub.subscription("catalogue-updated-asset").on("message", (message)=> {
+            console.log("Receiving...");
+            const asset = JSON.parse(message.data.toString());
+            console.log(asset);
+
+            message.ack();
+        })
+
+        // On delete asset
+        this.PubSub.subscription("catalogue-deleted-asset").on("message", (message)=> {
+            console.log("Receiving...");
+            const asset = JSON.parse(message.data.toString());
+            console.log(asset);
+
+            message.ack();
+        })
+
+        // On update purchase
+        this.PubSub.subscription("catalogue-updated-purchase").on("message", async (message)=> {
             console.log("Receiving...");
             const purchase = JSON.parse(message.data.toString());
             console.log(purchase);
-            // TODO: Update product
+            // TODO: Update product (owner)
 
-            // Pub updated product
+            // Pub updated product (to uploads)
+            // Update product (update by id)
+            // await publishPubSubMessage("updated-product", product);
 
             message.ack();
         })
