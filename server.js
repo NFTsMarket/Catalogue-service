@@ -109,7 +109,6 @@ app.post(BASE_API_PATH + "/products", authorizedClient, async (req, res) => {
     } else {
       // Publish a message to the topic
       try {
-        console.log(doc)
         await publishPubSubMessage("created-product", doc.cleanup());
         res.sendStatus(201);
       } catch(e) {

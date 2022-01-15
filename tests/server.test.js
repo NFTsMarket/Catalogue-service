@@ -140,7 +140,17 @@ describe("Catalogue API", () => {
 
     it("Should add a new product", () => {
       dbInsert.mockImplementation((c, callback) => {
-        callback(false);
+        callback(false, new Product({
+          title: "myProduct",
+          creator: "creator",
+          owner: "owner",
+          description: "Description of my product",
+          price: 150.5,
+          categories: categories,
+          picture: "www.myurl.com",
+          createdAt: "2020-06-20T15:00:00.000Z",
+          updatedAt: "2020-06-20T15:00:00.000Z",
+        }));
       });
 
       return request(app)
@@ -290,7 +300,17 @@ describe("Catalogue API", () => {
     // 204 code
     it("Should update an existing product", () => {
       dbUpdate.mockImplementation((f, update, v, callback) => {
-        callback(null, true);
+        callback(null, new Product({
+          title: "myProduct",
+          creator: "creator",
+          owner: "owner",
+          description: "Description of my product",
+          price: 150.5,
+          categories: categories,
+          picture: "www.myurl.com",
+          createdAt: "2020-06-20T15:00:00.000Z",
+          updatedAt: "2020-06-20T15:00:00.000Z",
+        }));
       });
 
       return request(app)
@@ -784,4 +804,5 @@ describe("Catalogue API", () => {
     });
 
   });
+
 });
