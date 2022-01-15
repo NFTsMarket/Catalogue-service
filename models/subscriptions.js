@@ -2,6 +2,7 @@ const { PubSub } = require('@google-cloud/pubsub');
 const { on } = require('nedb');
 const { createSubscription } = require('./pubsub');
 const User = require('../database/users')
+const Asset = require('../database/assets')
 
 class Subscriptions {
     constructor() {
@@ -30,6 +31,8 @@ class Subscriptions {
             const asset = JSON.parse(message.data.toString());
             console.log(asset);
 
+            Asset.create(asset, async (err) => {});
+
             message.ack();
         })
 
@@ -38,6 +41,11 @@ class Subscriptions {
             console.log("Receiving...");
             const asset = JSON.parse(message.data.toString());
             console.log(asset);
+            
+            const { data, where } = JSON.parse(message.data.toString());
+            var filter = { id: where.id };
+            
+            Asset.findOneAndUpdate(filter, data)
 
             message.ack();
         })
@@ -47,6 +55,12 @@ class Subscriptions {
             console.log("Receiving...");
             const asset = JSON.parse(message.data.toString());
             console.log(asset);
+
+            // Delete asset in database
+            const { id } = JSON.parse(message.data.toString());
+            var filter = { id };
+
+            Asset.findOneAndDelete(filter, { deleted: true})
 
             message.ack();
         })
