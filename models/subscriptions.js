@@ -3,6 +3,7 @@ const { on } = require('nedb');
 const { createSubscription } = require('./pubsub');
 const User = require('../database/users')
 const Asset = require('../database/assets')
+const Product = require('../products')
 
 class Subscriptions {
     constructor() {
@@ -72,12 +73,15 @@ class Subscriptions {
         this.PubSub.subscription("catalogue-updated-purchase").on("message", async (message)=> {
             console.log("Receiving...");
             const purchase = JSON.parse(message.data.toString());
+            const { productId, buyerId } = JSON.parse(message.data.toString());
             console.log(purchase);
-            // TODO: Update product (owner)
+            
+            // Update product (owner)
+            const product = Product.findOneAndUpdate({ productId }, { owner: buyerId });
 
             // Pub updated product (to uploads)
             // Update product (update by id)
-            // await publishPubSubMessage("updated-product", product);
+            await publishPubSubMessage("updated-product", product);
 
             message.ack();
         })
