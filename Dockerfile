@@ -18,6 +18,6 @@ COPY server.js .
 COPY products.js .
 COPY categories.js .
 
-EXPOSE 4000
+EXPOSE 3000
 
 CMD npm start
