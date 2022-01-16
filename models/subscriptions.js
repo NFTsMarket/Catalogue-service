@@ -81,11 +81,15 @@ class Subscriptions {
             console.log(purchase);
             
             // Update product (owner)
-            const product = Product.findOneAndUpdate({ productId }, { owner: buyerId });
-
+            const updatedProduct = Product.findOneAndUpdate({ productId }, { owner: buyerId });
+            console.log(updatedProduct);
             // Pub updated product (to uploads)
             // Update product (update by id)
-            await publishPubSubMessage("updated-product", product);
+            try {
+                await publishPubSubMessage("updated-product", updatedProduct);
+            } catch(e) {
+                console.log(e);
+            }
 
             message.ack();
         })
