@@ -374,4 +374,50 @@ app.get(BASE_API_PATH + "/products-category/:id", (req, res) => {
   .populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}]);
 });
 
+// GET PRODUCT BY USER
+app.get(BASE_API_PATH + "/products-owner/:id", (req, res) => {
+  console.log(Date() + " - GET /products-owner/:id");
+
+  // If the id is valid simply return a 404 code
+  if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+    return res.status(404).send("Please, insert a valid database id");
+  }
+
+  Product.find({owner: req.params.id}, (err, products) => {
+    if (err) {
+      console.log(Date() + " - " + err);
+      res.sendStatus(500);
+    } else {
+      res.send(
+        products.map((product) => {
+          return product.cleanup();
+        })
+      );
+    }
+    
+  }).populate(({
+    path: 'categories',
+    match: {
+      deleted: { $ne: true }
+    },
+}))
+  // TODO: Consider removing if not needed
+  .populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}]);
+});
+
+
+// GET ALL ASSETS
+app.get(BASE_API_PATH + "/assets", (req, res) => {
+  console.log(Date() + " - GET /assets");
+
+  Category.find({deleted:false}, (err, assets) => {
+    if (err) {
+      console.log(Date() + " - " + err);
+      res.sendStatus(500);
+    } else {
+      res.send(assets);
+    }
+  });
+});
+
 module.exports = app;
