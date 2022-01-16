@@ -85,14 +85,16 @@ class Subscriptions {
             const purchase = JSON.parse(message.data.toString());
             const { productId, buyerId } = JSON.parse(message.data.toString());
             console.log(purchase);
-            
             // Update product (owner)
-            const updatedProduct = Product.findOneAndUpdate({ productId }, { owner: buyerId }, { new: true });
-            console.log(updatedProduct);
+            
             // Pub updated product (to uploads)
             // Update product (update by id)
             try {
-                await publishPubSubMessage("updated-product", updatedProduct);
+                Product.findOneAndUpdate({ _id: productId }, { owner: buyerId }, { new: true }, async (err, doc) => {
+                    await publishPubSubMessage("updated-product", doc);
+                    console.log(doc);
+                });
+            
             } catch(e) {
                 console.log(e);
             }
