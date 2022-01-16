@@ -20,4 +20,5 @@ COPY categories.js .
 
 EXPOSE 4000
 
+
 CMD npm start
