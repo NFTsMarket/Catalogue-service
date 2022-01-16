@@ -27,78 +27,79 @@ class Subscriptions {
     execute() {
 
         // On create asset
-        // this.PubSub.subscription("catalogue-created-asset").on("message", (message)=> {
-        //     console.log("Receiving...");
-        //     const asset = JSON.parse(message.data.toString());
-        //     console.log(asset);
+        this.PubSub.subscription("catalogue-created-asset").on("message", (message)=> {
+            console.log("Receiving...");
+            const asset = JSON.parse(message.data.toString());
+            console.log(asset);
 
-        //     Asset.create(asset, async (err) => {});
+            Asset.create(asset, async (err) => {});
 
-        //     message.ack();
-        // })
+            message.ack();
+        })
 
         // On update asset
-        // this.PubSub.subscription("catalogue-updated-asset").on("message", (message)=> {
-        //     console.log("Receiving...");
-        //     const asset = JSON.parse(message.data.toString());
-        //     console.log(asset);
+        this.PubSub.subscription("catalogue-updated-asset").on("message", (message)=> {
+            console.log("Receiving...");
+            const asset = JSON.parse(message.data.toString());
+            console.log(asset);
             
-        //     const { data, where } = JSON.parse(message.data.toString());
-        //     var filter = { id: where.id };
+            // const { data, where } = JSON.parse(message.data.toString());
+            // var filter = { id: where.id };
+            // let filter = {};
             
-        //     Asset.findOneAndUpdate(filter, data)
+            // Asset.findOneAndUpdate(filter, data)
 
-        //     message.ack();
-        // })
+            message.ack();
+        })
 
         // On delete asset
-        // this.PubSub.subscription("catalogue-deleted-asset").on("message", (message)=> {
-        //     console.log("Receiving...");
-        //     const asset = JSON.parse(message.data.toString());
-        //     console.log(asset);
+        this.PubSub.subscription("catalogue-deleted-asset").on("message", (message)=> {
+            console.log("Receiving...");
+            const asset = JSON.parse(message.data.toString());
+            console.log(asset);
 
-        //     // Delete asset in database
-        //     const { id } = JSON.parse(message.data.toString());
-        //     var filter = { id };
+            // Delete asset in database
+            const { id } = JSON.parse(message.data.toString());
+            var filter = { id };
 
-        //     Asset.findOneAndUpdate(filter, { deleted: true})
+            Asset.findOneAndUpdate(filter, { deleted: true})
 
-        //     // Delete product with Asset
-        //     Product.findOneAndDelete({ picture: id})
+            // Delete product with Asset
+            Product.findOneAndDelete({ picture: id})
 
-        //     message.ack();
-        // })
+            message.ack();
+        })
 
         // On update purchase
-        // this.PubSub.subscription("catalogue-updated-purchase").on("message", async (message)=> {
-        //     console.log("Receiving...");
-        //     const purchase = JSON.parse(message.data.toString());
-        //     const { productId, buyerId } = JSON.parse(message.data.toString());
-        //     console.log(purchase);
+        this.PubSub.subscription("catalogue-updated-purchase").on("message", async (message)=> {
+            console.log("Receiving...");
+            const purchase = JSON.parse(message.data.toString());
+            const { productId, buyerId } = JSON.parse(message.data.toString());
+            console.log(purchase);
             
-        //     // Update product (owner)
-        //     const product = Product.findOneAndUpdate({ productId }, { owner: buyerId });
+            // Update product (owner)
+            const product = Product.findOneAndUpdate({ productId }, { owner: buyerId });
 
-        //     // Pub updated product (to uploads)
-        //     // Update product (update by id)
-        //     await publishPubSubMessage("updated-product", product);
+            // Pub updated product (to uploads)
+            // Update product (update by id)
+            await publishPubSubMessage("updated-product", product);
 
-        //     message.ack();
-        // })
+            message.ack();
+        })
 
         // On Created user
-        // this.PubSub
-        //     .subscription("catalogue-created-user")
-        //     .on("message", (message) => {
-        //         // Example extracting data for the message
-        //         console.log("Receiving...");
-        //         const user = JSON.parse(message.data.toString());
-        //         console.log(user);
-        //         User.create(user, async (err) => {});
+        this.PubSub
+            .subscription("catalogue-created-user")
+            .on("message", (message) => {
+                // Example extracting data for the message
+                console.log("Receiving...");
+                const user = JSON.parse(message.data.toString());
+                console.log(user);
+                User.create(user, async (err) => {});
 
 
-        //         message.ack();
-        //     });
+                message.ack();
+            });
 
             // On Updated user
             // Update all products from the user
