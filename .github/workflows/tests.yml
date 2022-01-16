@@ -39,6 +39,7 @@ jobs:
         GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY}}
         GOOGLE_CLIENT_EMAIL: ${{ secrets.GOOGLE_CLIENT_EMAIL}}
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        IMAGE_LABELLING_KEY: ${{ secrets.IMAGE_LABELLING_KEY }}
     - run: npm install -g npm
     - run: npm ci
     - run: npm run build --if-present
