@@ -1,6 +1,6 @@
 const { PubSub } = require('@google-cloud/pubsub');
 const { on } = require('nedb');
-const { createSubscription } = require('./pubsub');
+const { createSubscription, publishPubSubMessage } = require('./pubsub');
 const User = require('../database/users')
 const Asset = require('../database/assets')
 const Product = require('../products')
@@ -27,33 +27,36 @@ class Subscriptions {
     execute() {
 
         // On create asset
-        this.PubSub.subscription("catalogue-created-asset").on("message", (message)=> {
+        this.PubSub.subscription("catalogue-created-asset").on("message", async (message)=> {
             console.log("Receiving...");
-            const asset = JSON.parse(message.data.toString());
+            let asset = JSON.parse(message.data.toString());
             console.log(asset);
 
-            Asset.create(asset, async (err) => {});
-
+            try{
+                asset = await Asset.create(asset);
+                // Asset.create(asset, async (err) => {console.log(err)});
+            }catch(e){
+                console.log(e);
+            }
+            
             message.ack();
         })
 
         // On update asset
-        this.PubSub.subscription("catalogue-updated-asset").on("message", (message)=> {
+        this.PubSub.subscription("catalogue-updated-asset").on("message", async (message)=> {
             console.log("Receiving...");
+
             const asset = JSON.parse(message.data.toString());
             console.log(asset);
+            let filter = { id: asset.id };
             
-            // const { data, where } = JSON.parse(message.data.toString());
-            // var filter = { id: where.id };
-            // let filter = {};
-            
-            // Asset.findOneAndUpdate(filter, data)
+            await Asset.findOneAndUpdate(filter, asset)
 
             message.ack();
         })
 
         // On delete asset
-        this.PubSub.subscription("catalogue-deleted-asset").on("message", (message)=> {
+        this.PubSub.subscription("catalogue-deleted-asset").on("message", async (message)=> {
             console.log("Receiving...");
             const asset = JSON.parse(message.data.toString());
             console.log(asset);
@@ -62,7 +65,7 @@ class Subscriptions {
             const { id } = JSON.parse(message.data.toString());
             var filter = { id };
 
-            Asset.findOneAndUpdate(filter, { deleted: true})
+            await Asset.findOneAndUpdate(filter, { deleted: true})
 
             // Delete product with Asset
             Product.findOneAndDelete({ picture: id})
