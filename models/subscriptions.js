@@ -34,7 +34,6 @@ class Subscriptions {
 
             try{
                 asset = await Asset.create(asset);
-                // Asset.create(asset, async (err) => {console.log(err)});
             }catch(e){
                 console.log(e);
             }
@@ -50,7 +49,7 @@ class Subscriptions {
             console.log(asset);
             let filter = { id: asset.id };
             
-            await Asset.findOneAndUpdate(filter, asset)
+            await Asset.findOneAndUpdate(filter, asset, { new: true })
 
             message.ack();
         })
@@ -81,7 +80,7 @@ class Subscriptions {
             console.log(purchase);
             
             // Update product (owner)
-            const updatedProduct = Product.findOneAndUpdate({ productId }, { owner: buyerId });
+            const updatedProduct = Product.findOneAndUpdate({ productId }, { owner: buyerId }, { new: true });
             console.log(updatedProduct);
             // Pub updated product (to uploads)
             // Update product (update by id)
@@ -121,7 +120,8 @@ class Subscriptions {
 
                 User.findOneAndUpdate(
                     filter,
-                    data
+                    data, 
+                    { new: true }
                 )
 
                 console.log(where);
