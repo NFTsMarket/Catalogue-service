@@ -3,9 +3,9 @@ var bodyParser = require("body-parser");
 var cors = require('cors');
 const Product = require("./products.js");
 const Category = require("./categories.js");
+const User = require("./database/users.js");
 const { publishPubSubMessage } = require("./models/pubsub.js");
 const {
-  authorizedAdmin,
   authorizedClient,
 } = require("./middlewares/authorized-roles");
 
@@ -41,14 +41,13 @@ app.get(BASE_API_PATH + "/products", (req, res) => {
         })
       );
     }
-  }).populate(({
-    path: 'categories',
-    match: {
-      deleted: { $ne: true }
-    },
-}))
-  // TODO: Consider removing if not needed
-  .populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}]);
+  })
+  .populate([{path: 'categories', match: {deleted: { $ne: true }}},
+        {path: "owner", select: ["name", "email"] },
+        {path: "creator", select: ["name", "email"]},
+        {path: "picture", select: ["name", "file"]}
+      ])
+
 });
 
 // GET PRODUCT BY ID
@@ -72,14 +71,12 @@ app.get(BASE_API_PATH + "/products/:id", (req, res) => {
     } else {
       res.status(404).send("Product not found");
     }
-  }).populate(({
-    path: 'categories',
-    match: {
-      deleted: { $ne: true }
-    },
-}))
-  // TODO: Consider removing if not needed
-  .populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}]);
+  })
+  .populate([{path: 'categories', match: {deleted: { $ne: true }}},
+        {path: "owner", select: ["name", "email"] },
+        {path: "creator", select: ["name", "email"]},
+        {path: "picture", select: ["name", "file"]}
+      ])
 });
 
 // CREATE A PRODUCT
@@ -373,5 +370,8 @@ app.get(BASE_API_PATH + "/products-category/:id", (req, res) => {
   // TODO: Consider removing if not needed
   .populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}]);
 });
+
+
+
 
 module.exports = app;

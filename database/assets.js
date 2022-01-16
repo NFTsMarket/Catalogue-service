@@ -12,6 +12,11 @@ const assetSchema = new mongoose.Schema({
 
 })
 
+assetSchema.pre("save", function(next) {
+  this._id = this.id;
+  next();
+})
+
 const Asset = mongoose.model("Asset", assetSchema);
 
 module.exports = Asset;

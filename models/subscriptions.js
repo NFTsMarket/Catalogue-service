@@ -109,6 +109,7 @@ class Subscriptions {
                 // Example extracting data for the message
                 console.log("Receiving...");
                 const user = JSON.parse(message.data.toString());
+                
                 console.log(user);
                 User.create(user, async (err) => {});
 

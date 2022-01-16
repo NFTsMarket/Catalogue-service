@@ -9,10 +9,12 @@ const productSchema = new mongoose.Schema({
   creator: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
+    ref: "User",
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
+    ref: "User",
   },
   description: {
     type: String,
@@ -32,6 +34,7 @@ const productSchema = new mongoose.Schema({
   picture: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
+    ref: "Asset",
     // validate: {
     //   validator: function (v) {
     //     return /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/.test(
