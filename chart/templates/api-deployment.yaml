@@ -36,10 +36,10 @@ spec:
             periodSeconds: 1
             httpGet:
               path: /api/v1/healthz
-              port: 4000
+              port: 5000
           livenessProbe:
             initialDelaySeconds: 10
             periodSeconds: 1
             httpGet:
               path: /api/v1/healthz
-              port: 4000
+              port: 5000
