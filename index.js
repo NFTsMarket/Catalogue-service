@@ -5,7 +5,7 @@ const { getLabels } = require("./externalAPI/imageLabeling");
 
 require("dotenv").config();
 
-var port = process.env.PORT || 4000;
+var port = process.env.PORT || 5000;
 
 console.log("Starting API server at " + port);
 
