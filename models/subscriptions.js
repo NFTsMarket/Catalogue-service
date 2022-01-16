@@ -50,7 +50,15 @@ class Subscriptions {
             console.log(asset);
             let filter = { id: asset.id };
             
+<<<<<<< Updated upstream
             await Asset.findOneAndUpdate(filter, asset)
+=======
+            try{
+                await Asset.findOneAndUpdate(filter, asset, { new: true })
+            }catch(e){
+                console.log(e);
+            }
+>>>>>>> Stashed changes
 
             message.ack();
         })
@@ -65,8 +73,12 @@ class Subscriptions {
             const { id } = JSON.parse(message.data.toString());
             var filter = { id };
 
-            await Asset.findOneAndUpdate(filter, { deleted: true})
-
+            try{
+                await Asset.findOneAndUpdate(filter, { deleted: true});
+            } catch(e){
+                console.log(e);
+            }
+            
             // Delete product with Asset
             Product.findOneAndDelete({ picture: id})
 
