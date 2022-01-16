@@ -47,9 +47,7 @@ app.get(BASE_API_PATH + "/products", (req, res) => {
     match: {
       deleted: { $ne: true }
     },
-}))
-  // TODO: Consider removing if not needed
-  .populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}]);
+})).populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}, {path: "picture", ref: "Asset", match:"id"}]);
 });
 
 // GET PRODUCT BY ID
@@ -78,9 +76,7 @@ app.get(BASE_API_PATH + "/products/:id", (req, res) => {
     match: {
       deleted: { $ne: true }
     },
-}))
-  // TODO: Consider removing if not needed
-  .populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}]);
+})).populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}, {path: "picture", ref: "Asset", match:"id"}]);
 });
 
 // CREATE A PRODUCT
@@ -370,9 +366,7 @@ app.get(BASE_API_PATH + "/products-category/:id", (req, res) => {
     match: {
       deleted: { $ne: true }
     },
-}))
-  // TODO: Consider removing if not needed
-  .populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}]);
+})).populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}, {path: "picture", ref: "Asset", match:"id"}]);
 });
 
 
