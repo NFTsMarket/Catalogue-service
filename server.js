@@ -68,7 +68,7 @@ app.get(BASE_API_PATH + "/products/:id", (req, res) => {
       res.sendStatus(500);
     } else if (product) {
       console.log(JSON.stringify(product));
-      res.status(200).send(product.cleanup());
+      res.send(product.cleanup());
     } else {
       res.status(404).send("Product not found");
     }
