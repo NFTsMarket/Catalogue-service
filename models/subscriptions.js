@@ -50,15 +50,11 @@ class Subscriptions {
             console.log(asset);
             let filter = { id: asset.id };
             
-<<<<<<< Updated upstream
-            await Asset.findOneAndUpdate(filter, asset)
-=======
             try{
                 await Asset.findOneAndUpdate(filter, asset, { new: true })
             }catch(e){
                 console.log(e);
             }
->>>>>>> Stashed changes
 
             message.ack();
         })
