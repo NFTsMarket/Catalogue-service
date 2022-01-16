@@ -34,7 +34,6 @@ class Subscriptions {
 
             try{
                 asset = await Asset.create(asset);
-                // Asset.create(asset, async (err) => {console.log(err)});
             }catch(e){
                 console.log(e);
             }
@@ -55,7 +54,6 @@ class Subscriptions {
             }catch(e){
                 console.log(e);
             }
-
             message.ack();
         })
 
@@ -87,14 +85,16 @@ class Subscriptions {
             const purchase = JSON.parse(message.data.toString());
             const { productId, buyerId } = JSON.parse(message.data.toString());
             console.log(purchase);
-            
             // Update product (owner)
-            const updatedProduct = Product.findOneAndUpdate({ productId }, { owner: buyerId });
-            console.log(updatedProduct);
+            
             // Pub updated product (to uploads)
             // Update product (update by id)
             try {
-                await publishPubSubMessage("updated-product", updatedProduct);
+                Product.findOneAndUpdate({ _id: productId }, { owner: buyerId }, { new: true }, async (err, doc) => {
+                    await publishPubSubMessage("updated-product", doc);
+                    console.log(doc);
+                });
+            
             } catch(e) {
                 console.log(e);
             }
@@ -129,7 +129,8 @@ class Subscriptions {
 
                 User.findOneAndUpdate(
                     filter,
-                    data
+                    data, 
+                    { new: true }
                 )
 
                 console.log(where);
