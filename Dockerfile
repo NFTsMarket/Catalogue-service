@@ -7,9 +7,10 @@ COPY package-lock.json .
 
 RUN npm install
 
+COPY database ./database
+COPY externalAPI ./externalAPI
 COPY models ./models
 COPY middlewares ./middlewares
-COPY database ./database
 COPY utils ./utils
 COPY index.js .
 COPY db.js .

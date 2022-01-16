@@ -38,11 +38,11 @@ describe("Catalogue API", () => {
     const products = [
       new Product({
         title: "second product",
-        creator: "creator2",
+        creator: "61d1e7b48140c58e2084ba71",
         description: "Description of my second product",
         price: 20.0,
         categories: categories,
-        picture: "www.url2.com",
+        picture: "61d1e7b48140c58e2084ba72",
       }),
     ];
 
@@ -133,11 +133,11 @@ describe("Catalogue API", () => {
     const categories = ["61d1e7b48140c58e2084ba70"];
     const product = {
       title: "myProduct",
-      creator: "creator",
+      creator: "61d1e7b48140c58e2084ba73",
       description: "Description of my product",
       price: 150.5,
       categories: categories,
-      picture: "www.myurl.com",
+      picture: "61d1e7b48140c58e2084ba708",
     };
     let dbInsert;
 
@@ -149,12 +149,12 @@ describe("Catalogue API", () => {
       dbInsert.mockImplementation((c, callback) => {
         callback(false, new Product({
           title: "myProduct",
-          creator: "creator",
+          creator: "61d1e7b48140c58e2084ba75",
           owner: "owner",
           description: "Description of my product",
           price: 150.5,
           categories: categories,
-          picture: "www.myurl.com",
+          picture: "61d1e7b48140c58e2084ba73",
           createdAt: "2020-06-20T15:00:00.000Z",
           updatedAt: "2020-06-20T15:00:00.000Z",
         }));
@@ -293,11 +293,11 @@ describe("Catalogue API", () => {
     const categories = ["61d1e7b48140c58e2084ba70"];
     const update = {
       title: "new title",
-      owner: "new owner",
+      owner: "61d1e7b48140c58e2084ba73",
       description: "new description",
       price: 12.0,
       categories: categories,
-      picture: "www.newPicture.com",
+      picture: "61d1e7b48140c58e2084ba7e",
     };
 
     beforeEach(() => {
@@ -309,12 +309,12 @@ describe("Catalogue API", () => {
       dbUpdate.mockImplementation((f, update, v, callback) => {
         callback(null, new Product({
           title: "myProduct",
-          creator: "creator",
-          owner: "owner",
+          creator: "61d1e7b48140c58e2084ba72",
+          owner: "61d1e7b48140c58e2084ba72",
           description: "Description of my product",
           price: 150.5,
           categories: categories,
-          picture: "www.myurl.com",
+          picture: "61d1e7b48140c58e2084ba71",
           createdAt: "2020-06-20T15:00:00.000Z",
           updatedAt: "2020-06-20T15:00:00.000Z",
         }));

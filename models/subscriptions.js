@@ -43,10 +43,11 @@ class Subscriptions {
             const asset = JSON.parse(message.data.toString());
             console.log(asset);
             
-            const { data, where } = JSON.parse(message.data.toString());
-            var filter = { id: where.id };
+            // const { data, where } = JSON.parse(message.data.toString());
+            // var filter = { id: where.id };
+            // let filter = {};
             
-            Asset.findOneAndUpdate(filter, data)
+            // Asset.findOneAndUpdate(filter, data)
 
             message.ack();
         })
@@ -137,8 +138,6 @@ class Subscriptions {
                     filter,
                     {deleted: true}
                 )
-
-                console.log(data);
 
                 message.ack();
             });
