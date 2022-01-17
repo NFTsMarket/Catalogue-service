@@ -23,7 +23,7 @@ categorySchema.methods.cleanup = function () {
     name: this.name,
     createdAt: this.createdAt,
     updatedAt: this.updatedAt,
-    deleted: this.deleted,
+    // deleted: this.deleted,
   };
 };
 
