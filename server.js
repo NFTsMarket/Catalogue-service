@@ -41,7 +41,7 @@ app.get(BASE_API_PATH + "/products", (req, res) => {
       );
     }
   })
-  .populate([{path: 'categories', match: {deleted: { $ne: true }}},
+  .populate([{path: 'categories', match: {deleted: { $ne: true }, select: ["name"]}},
         {path: "owner", select: ["name", "email"] },
         {path: "creator", select: ["name", "email"]},
         {path: "picture", select: ["name", "file"]}
