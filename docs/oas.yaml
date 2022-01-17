@@ -1,0 +1,533 @@
+---
+openapi: 3.0.0
+info:
+  title: Catalogue API
+  description: Catalogue API
+  contact:
+    email: javalenzuela@us.es
+  version: 1.0.1
+servers:
+- url: https://virtserver.swaggerhub.com/jcav/Catalogue-API/1.0.1
+  description: SwaggerHub API Auto Mocking
+- url: https://api-catalogue-juancarlosalonsovalenzuela.cloud.okteto.net/api/v1
+  description: Catalogue API server
+- url: https//localhost:3000/api/v1
+  description: Localhost
+paths:
+  /products:
+    get:
+      summary: Get all products
+      description: Get all products
+      operationId: getProducts
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200'
+        "500":
+          description: Server error
+    post:
+      summary: Add a new Product
+      operationId: addProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/products_body'
+      responses:
+        "201":
+          description: Product created
+        "400":
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "500":
+          description: Server error
+        "401":
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_401'
+        "403":
+          description: Permission error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_401'
+  /products/{productId}:
+    get:
+      summary: Find product by ID
+      description: Returns a single product
+      operationId: getProductById
+      parameters:
+      - name: productId
+        in: path
+        description: ID of product to return
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_1'
+        "500":
+          description: Server error
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+    put:
+      summary: Update an existing product
+      operationId: updateProduct
+      parameters:
+      - name: productId
+        in: path
+        description: ID of product to update
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/products_productId_body'
+      responses:
+        "204":
+          description: Product updated
+        "400":
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "500":
+          description: Server error
+        "401":
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_401'
+        "403":
+          description: Permission error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+    delete:
+      summary: Delete product by ID
+      description: Deletes a single product
+      operationId: deleteProductById
+      parameters:
+      - name: productId
+        in: path
+        description: ID of product to update
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Product deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "500":
+          description: Server error
+  /categories:
+    get:
+      summary: Get all categories
+      description: Get all categories
+      operationId: getCategories
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200_2'
+        "500":
+          description: Server error
+    post:
+      summary: Add a new category
+      operationId: addCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/categories_body'
+      responses:
+        "201":
+          description: Category created
+        "400":
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "500":
+          description: Server error
+        "401":
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_401'
+        "403":
+          description: Permission error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_401'
+  /categories/{categoryId}:
+    get:
+      summary: Find category by id
+      description: Returns a single category
+      operationId: getCategoryById
+      parameters:
+      - name: categoryId
+        in: path
+        description: ID of the category to return
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_2'
+        "500":
+          description: Server error
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+    put:
+      summary: Update an existing category
+      operationId: updateCategory
+      parameters:
+      - name: categoryId
+        in: path
+        description: ID of category to update
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Successful response
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/categories_categoryId_body'
+      responses:
+        "204":
+          description: Product updated
+        "400":
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "500":
+          description: Server error
+        "401":
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_401'
+        "403":
+          description: Permission error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+    delete:
+      summary: Delete category by ID
+      description: Delete a single category
+      operationId: deleteCategoryById
+      parameters:
+      - name: categoryId
+        in: path
+        description: ID of category to update
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Product deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "500":
+          description: Server error
+  /assets:
+    get:
+      summary: Get all assets
+      description: Get all assets
+      operationId: getAssets
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_3'
+        "500":
+          description: Server error
+  /products-category/{categoryId}:
+    get:
+      summary: Find product by category ID
+      description: Returns a list of products
+      operationId: getProductsByCategoryId
+      parameters:
+      - name: categoryId
+        in: path
+        description: ID of category
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200'
+        "500":
+          description: Server error
+components:
+  schemas:
+    products_creator:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+    products_categories:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+    products_picture:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        file:
+          type: string
+    inline_response_200:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        creator:
+          $ref: '#/components/schemas/products_creator'
+        owner:
+          $ref: '#/components/schemas/products_creator'
+        description:
+          type: string
+        price:
+          type: number
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/products_categories'
+        picture:
+          $ref: '#/components/schemas/products_picture'
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+    products_body:
+      type: object
+      properties:
+        title:
+          type: string
+        creator:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        category:
+          type: array
+          items:
+            type: string
+        picture:
+          type: string
+    inline_response_400:
+      type: object
+      properties:
+        error:
+          type: string
+    inline_response_401:
+      type: object
+      properties:
+        msg:
+          type: string
+    inline_response_200_1:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        creator:
+          type: object
+          properties:
+            _id:
+              type: string
+            name:
+              type: string
+            email:
+              type: string
+        owner:
+          type: object
+          properties:
+            _id:
+              type: string
+            name:
+              type: string
+            email:
+              type: string
+        description:
+          type: string
+        price:
+          type: number
+        categories:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+              name:
+                type: string
+        picture:
+          type: object
+          properties:
+            _id:
+              type: string
+            name:
+              type: string
+            file:
+              type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+    products_productId_body:
+      type: object
+      properties:
+        title:
+          type: string
+        owner:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        category:
+          type: array
+          items:
+            type: string
+        picture:
+          type: string
+    inline_response_200_2:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+    categories_body:
+      type: object
+      properties:
+        name:
+          type: string
+    categories_categoryId_body:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+    inline_response_200_3:
+      type: object
+      properties:
+        id:
+          type: string
+        user:
+          type: string
+        name:
+          type: string
+        file:
+          type: string
