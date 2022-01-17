@@ -250,7 +250,7 @@ app.post(BASE_API_PATH + "/categories", authorizedClient, (req, res) => {
     updatedAt: Date(),
   });
 
-  Category.create(category, (err) => {
+    Category.create(category, async (err, doc) => {
     if (err) {
       console.log(Date() + " - " + err);
 
@@ -260,7 +260,7 @@ app.post(BASE_API_PATH + "/categories", authorizedClient, (req, res) => {
         res.sendStatus(500);
       }
     } else {
-      res.sendStatus(201);
+      res.status(201).send(doc);
     }
   });
 });
