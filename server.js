@@ -56,7 +56,7 @@ app.get(BASE_API_PATH + "/products/:id", (req, res) => {
 
   // If the id is valid simply return a 404 code
   if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
-    return res.status(404).send("Please, insert a valid database id");
+    return res.status(404).send({ error: "Please, insert a valid database id" })
   }
 
   var filter = { _id: req.params.id };
@@ -69,7 +69,7 @@ app.get(BASE_API_PATH + "/products/:id", (req, res) => {
       console.log(JSON.stringify(product));
       res.send(product.cleanup());
     } else {
-      res.status(404).send("Product not found");
+      res.status(404).send({ error: "Product not found" });
     }
   })
   .populate([{path: 'categories', match: {deleted: { $ne: true }}, select: "name"},
@@ -123,7 +123,7 @@ app.put(BASE_API_PATH + "/products/:id", authorizedClient, async (req, res) => {
 
   // If the id is valid simply return a 404 code
   if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
-    return res.status(404).send("Please, insert a valid database id");
+    return res.status(404).send({ error: "Please, insert a valid database id" });
   }
 
   var filter = { _id: req.params.id };
@@ -160,7 +160,7 @@ app.put(BASE_API_PATH + "/products/:id", authorizedClient, async (req, res) => {
             res.status(500).send(e);
           } 
         } else {
-          res.status(404).send("Product not found");
+          res.status(404).send({ error: "Product not found" });
         }
       }
     }
@@ -173,7 +173,7 @@ app.delete(BASE_API_PATH + "/products/:id", authorizedClient, async (req, res) =
 
   // If the id is valid simply return a 404 code
   if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
-    return res.status(404).send("Please, insert a valid database id");
+    return res.status(404).send({ error: "Please, insert a valid database id" });
   }
 
   Product.findByIdAndDelete(req.params.id, async function (err, product) {
@@ -190,7 +190,7 @@ app.delete(BASE_API_PATH + "/products/:id", authorizedClient, async (req, res) =
       }
       
     } else {
-      res.status(404).send("Product not found");
+      res.status(404).send({ error: "Product not found" });
     }
   });
 
@@ -224,7 +224,7 @@ app.get(BASE_API_PATH + "/categories/:id", (req, res) => {
 
   // If the id is valid simply return a 404 code
   if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
-    return res.status(404).send("Please, insert a valid database id");
+    return res.status(404).send({ error: "Please, insert a valid database id" });
   }
 
   var filter = { _id: req.params.id };
@@ -236,7 +236,7 @@ app.get(BASE_API_PATH + "/categories/:id", (req, res) => {
       console.log(JSON.stringify(category));
       res.status(200).send(category.cleanup());
     } else {
-      res.status(404).send("Category not found");
+      res.status(404).send({ error: "Category not found" });
     }
   });
 });
@@ -272,7 +272,7 @@ app.put(BASE_API_PATH + "/categories/:id", authorizedClient, async (req, res) =>
 
   // If the id is valid simply return a 404 code
   if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
-    return res.status(404).send("Please, insert a valid database id");
+    return res.status(404).send({ error: "Please, insert a valid database id" });
   }
 
   var filter = { _id: req.params.id };
@@ -295,7 +295,7 @@ app.put(BASE_API_PATH + "/categories/:id", authorizedClient, async (req, res) =>
           console.log(doc);
           res.sendStatus(204);
         } else {
-          res.status(404).send("Category not found");
+          res.status(404).send({ error: "Category not found" });
         }
       }
     }
@@ -308,7 +308,7 @@ app.delete(BASE_API_PATH + "/categories/:id", authorizedClient, async (req, res)
 
   // If the id is valid simply return a 404 code
   if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
-    return res.status(404).send("Please, insert a valid database id");
+    return res.status(404).send({ error: "Please, insert a valid database id" });
   }
 
   var filter = { _id: req.params.id };
@@ -331,7 +331,7 @@ app.delete(BASE_API_PATH + "/categories/:id", authorizedClient, async (req, res)
           console.log(doc);
           res.sendStatus(204);
         } else {
-          res.status(404).send("Category not found");
+          res.status(404).send({ error: "Category not found" });
         }
       }
     }
@@ -346,7 +346,7 @@ app.get(BASE_API_PATH + "/products-category/:id", (req, res) => {
 
   // If the id is valid simply return a 404 code
   if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
-    return res.status(404).send("Please, insert a valid database id");
+    return res.status(404).send({ error: "Please, insert a valid database id" });
   }
 
   Product.find({categories: req.params.id}, (err, products) => {
