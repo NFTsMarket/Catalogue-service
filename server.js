@@ -4,6 +4,7 @@ var cors = require('cors');
 const Product = require("./products.js");
 const Category = require("./categories.js");
 const User = require("./database/users.js");
+const Asset = require("./database/assets.js")
 const { publishPubSubMessage } = require("./models/pubsub.js");
 const { authorizedClient } = require("./middlewares/authorized-roles");
 
@@ -45,6 +46,7 @@ app.get(BASE_API_PATH + "/products", (req, res) => {
         {path: "creator", select: ["name", "email"]},
         {path: "picture", select: ["name", "file"]}
       ])
+
 
 });
 
@@ -364,11 +366,24 @@ app.get(BASE_API_PATH + "/products-category/:id", (req, res) => {
     match: {
       deleted: { $ne: true }
     },
-}))
-  // TODO: Consider removing if not needed
-  .populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}]);
+})).populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}, {path: "picture", ref: "Asset", match:"id"}]);
 });
 
+
+
+// GET ALL ASSETS
+app.get(BASE_API_PATH + "/assets", (req, res) => {
+  console.log(Date() + " - GET /assets");
+
+  Asset.find({deleted:false}, (err, assets) => {
+    if (err) {
+      console.log(Date() + " - " + err);
+      res.sendStatus(500);
+    } else {
+      res.send(assets);
+    }
+  });
+});
 
 
 
