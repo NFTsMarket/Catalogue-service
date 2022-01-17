@@ -5,9 +5,7 @@ const Product = require("./products.js");
 const Category = require("./categories.js");
 const User = require("./database/users.js");
 const { publishPubSubMessage } = require("./models/pubsub.js");
-const {
-  authorizedClient,
-} = require("./middlewares/authorized-roles");
+const { authorizedClient } = require("./middlewares/authorized-roles");
 
 var BASE_API_PATH = "/api/v1";
 
