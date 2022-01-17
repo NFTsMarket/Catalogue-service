@@ -12,7 +12,7 @@ var BASE_API_PATH = "/api/v1";
 
 var app = express();
 app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit:'50mb'}));
 
 
 app.get("/", (req, res) => {
