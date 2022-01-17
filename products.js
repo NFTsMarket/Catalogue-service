@@ -34,7 +34,8 @@ const productSchema = new mongoose.Schema({
   picture: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: "Asset"
+    ref: "Asset",
+    unique: true,
   },
   createdAt: String,
   updatedAt: String,
