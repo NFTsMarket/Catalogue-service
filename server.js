@@ -260,7 +260,7 @@ app.post(BASE_API_PATH + "/categories", authorizedClient, (req, res) => {
         res.sendStatus(500);
       }
     } else {
-      res.status(201).send(doc);
+      res.status(201).json(doc);
     }
   });
 });
