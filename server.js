@@ -361,12 +361,13 @@ app.get(BASE_API_PATH + "/products-category/:id", (req, res) => {
       );
     }
     
-  }).populate(({
-    path: 'categories',
-    match: {
-      deleted: { $ne: true }
-    },
-})).populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}, {path: "picture", ref: "Asset", match:"id"}]);
+  })
+  .populate([{path: 'categories', match: {deleted: { $ne: true }}, select: "name"},
+    {path: "owner", select: ["name", "email"] },
+    {path: "creator", select: ["name", "email"]},
+    {path: "picture", select: ["name", "file"]}
+  ])
+
 });
 
 
