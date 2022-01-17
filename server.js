@@ -380,7 +380,11 @@ app.get(BASE_API_PATH + "/assets", (req, res) => {
       console.log(Date() + " - " + err);
       res.sendStatus(500);
     } else {
-      res.send(assets);
+      res.send(
+            assets.map((asset) => {
+              return asset.cleanup();
+            })
+        );
     }
   });
 });
