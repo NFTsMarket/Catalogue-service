@@ -1,5 +1,6 @@
 const request = require('request');
 const rp = require('request-promise');
+const http = require('https');
 
 
 require("dotenv").config();
@@ -42,22 +43,35 @@ const getLabels = async (pictureUrl) =>{
         json: true
       };
 
-      let result;
+      // let result;
 
-      await rp(options).then(parsedBody => {
-        result = parsedBody;
-        // console.log(parsedBody);
-        // console.log(result);
-        // return parsedBody;
-      }).catch(err => {
-        result = [];
-        // return [];
+      // await rp(options).then(parsedBody => {
+      //   resolve(parsedBody);
+      //   // console.log(parsedBody);
+      //   // console.log(result);
+      //   // return parsedBody;
+      // }).catch(err => {
+      //   result = [];
+      //   // return [];
 
-      });
+      // });
 
-      console.log("imprimiendo result")
-      console.log(result)
-      return result;
+      return new Promise ((resolve, reject) => {
+        let req = http.request(options);
+    
+        req.on('response', res => {
+          resolve(res);
+        });
+    
+        req.on('error', err => {
+          reject(err);
+        });
+      }); 
+    
+
+      // console.log("imprimiendo result")
+      // console.log(result)
+      // return result;
 
 
 

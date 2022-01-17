@@ -11,6 +11,11 @@ const userSchema = new mongoose.Schema({
     }
   })
 
+userSchema.pre("save", function(next) {
+  this._id = this.id;
+  next();
+})
+
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;

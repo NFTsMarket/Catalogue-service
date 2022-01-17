@@ -1,7 +1,6 @@
 const app = require("./server.js");
 const dbConnect = require("./db.js");
 const Subscriptions = require("./models/subscriptions");
-const { getLabels } = require("./externalAPI/imageLabeling");
 
 require("dotenv").config();
 
@@ -12,9 +11,6 @@ console.log("Starting API server at " + port);
 const subscriptions = new Subscriptions();
 subscriptions.initialize();
 subscriptions.execute();
-
-console.log("Trying to call the API")
-
 
 dbConnect().then(
   () => {

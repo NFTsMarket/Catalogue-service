@@ -8,16 +8,6 @@ COPY package-lock.json .
 RUN npm install
 
 COPY . . 
-# COPY database ./database
-# COPY externalAPI ./externalAPI
-# COPY models ./models
-# COPY middlewares ./middlewares
-# COPY utils ./utils
-# COPY index.js .
-# COPY db.js .
-# COPY server.js .
-# COPY products.js .
-# COPY categories.js .
 
 EXPOSE 3000
 

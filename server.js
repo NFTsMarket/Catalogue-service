@@ -3,12 +3,10 @@ var bodyParser = require("body-parser");
 var cors = require('cors');
 const Product = require("./products.js");
 const Category = require("./categories.js");
+const User = require("./database/users.js");
 const Asset = require("./database/assets.js")
 const { publishPubSubMessage } = require("./models/pubsub.js");
-const {
-  authorizedAdmin,
-  authorizedClient,
-} = require("./middlewares/authorized-roles");
+const { authorizedClient } = require("./middlewares/authorized-roles");
 
 var BASE_API_PATH = "/api/v1";
 
@@ -42,12 +40,14 @@ app.get(BASE_API_PATH + "/products", (req, res) => {
         })
       );
     }
-  }).populate(({
-    path: 'categories',
-    match: {
-      deleted: { $ne: true }
-    },
-})).populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}, {path: "picture", ref: "Asset", match:"id"}]);
+  })
+  .populate([{path: 'categories', match: {deleted: { $ne: true }}},
+        {path: "owner", select: ["name", "email"] },
+        {path: "creator", select: ["name", "email"]},
+        {path: "picture", select: ["name", "file"]}
+      ])
+
+
 });
 
 // GET PRODUCT BY ID
@@ -71,12 +71,12 @@ app.get(BASE_API_PATH + "/products/:id", (req, res) => {
     } else {
       res.status(404).send("Product not found");
     }
-  }).populate(({
-    path: 'categories',
-    match: {
-      deleted: { $ne: true }
-    },
-})).populate([{path: "owner", ref: "User", match:"id"}, {path: "creator", ref: "User", match:"id"}, {path: "picture", ref: "Asset", match:"id"}]);
+  })
+  .populate([{path: 'categories', match: {deleted: { $ne: true }}},
+        {path: "owner", select: ["name", "email"] },
+        {path: "creator", select: ["name", "email"]},
+        {path: "picture", select: ["name", "file"]}
+      ])
 });
 
 // CREATE A PRODUCT
@@ -384,8 +384,6 @@ app.get(BASE_API_PATH + "/assets", (req, res) => {
     }
   });
 });
-
-
 
 
 
