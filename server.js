@@ -16,7 +16,7 @@ app.use(bodyParser.json({limit:'50mb'}));
 
 
 app.get("/", (req, res) => {
-  res.redirect("https://app.swaggerhub.com/apis-docs/jcav/Catalogue-API/1.0.1");
+  res.send("<html><body><h1>Catalogue API</h1></body></html>");
 });
 
 app.get(BASE_API_PATH + "/healthz", (req, res) => {
