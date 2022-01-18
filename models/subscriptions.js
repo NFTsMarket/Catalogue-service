@@ -95,7 +95,7 @@ class Subscriptions {
 
                     Asset.findOneAndUpdate({ _id: assetId }, { user: buyerId }, { new: true }, async (err, doc) => {
 
-                        await publishPubSubMessage("updated-product", {"picture":assetId,"owner":buyerId});
+                        await publishPubSubMessage("updated-product", {"picture":doc.id,"owner":doc.user});
                         console.log(doc);
                     });
                     
